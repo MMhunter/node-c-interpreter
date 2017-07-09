@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dts-gen": "dts-generator --name node-c-interpreter --project . --out node-c-interpreter.d.ts"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/MMhunter/node-c-intrepreter/issues"
   },
-  "homepage": "https://github.com/MMhunter/node-c-intrepreter#readme"
+  "homepage": "https://github.com/MMhunter/node-c-intrepreter#readme",
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "dts-generator": "^2.1.0",
+    "mocha": "^3.4.2",
+    "typescript": "^2.4.1"
+  }
 }
