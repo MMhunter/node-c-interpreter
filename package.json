@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MMhunter/node-c-intrepreter.git"
+    "url": "git+https://github.com/MMhunter/node-c-interpreter.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MMhunter/node-c-intrepreter/issues"
+    "url": "https://github.com/MMhunter/node-c-interpreter/issues"
   },
   "homepage": "https://github.com/MMhunter/node-c-intrepreter#readme",
   "devDependencies": {
