@@ -1,1 +1,1 @@
-# node-c-intrepreter
+# node-c-interpreter
