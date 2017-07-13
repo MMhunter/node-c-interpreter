@@ -314,62 +314,79 @@ postfix_expression_tail
 	PTR_OP IDENTIFIER <postfix_expression_tail>
 	INC_OP <postfix_expression_tail>
 	DEC_OP <postfix_expression_tail>
+	<empty>
 
 argument_expression_list_tail
 	, <assignment_expression> <argument_expression_list_tail>
+	<empty>
 
 multiplicative_expression_tail
 	* <cast_expression> <multiplicative_expression_tail>
 	/ <cast_expression> <multiplicative_expression_tail>
 	% <cast_expression> <multiplicative_expression_tail>
+	<empty>
 
 additive_expression_tail
 	+ <multiplicative_expression> <additive_expression_tail>
 	- <multiplicative_expression> <additive_expression_tail>
+	<empty>
 
 shift_expression_tail
 	LEFT_OP <additive_expression> <shift_expression_tail>
 	RIGHT_OP <additive_expression> <shift_expression_tail>
+	<empty>
 
 relational_expression_tail
 	< <shift_expression> <relational_expression_tail>
 	> <shift_expression> <relational_expression_tail>
 	LE_OP <shift_expression> <relational_expression_tail>
 	GE_OP <shift_expression> <relational_expression_tail>
+	<empty>
 
 equality_expression_tail
 	EQ_OP <relational_expression> <equality_expression_tail>
 	NE_OP <relational_expression> <equality_expression_tail>
+	<empty>
 
 and_expression_tail
 	& <equality_expression> <and_expression_tail>
+	<empty>
 
 exclusive_or_expression_tail
 	^ <and_expression> <exclusive_or_expression_tail>
+	<empty>
 
 inclusive_or_expression_tail
 	| <exclusive_or_expression> <inclusive_or_expression_tail>
+	<empty>
 
 logical_and_expression_tail
 	AND_OP <inclusive_or_expression> <logical_and_expression_tail>
+	<empty>
 
 logical_or_expression_tail
 	OR_OP <logical_and_expression> <logical_or_expression_tail>
+	<empty>
 
 expression_tail
 	, <assignment_expression> <expression_tail>
+	<empty>
 
 init_declarator_list_tail
 	, <init_declarator> <init_declarator_list_tail>
+	<empty>
 
 struct_declaration_list_tail
 	<struct_declaration> <struct_declaration_list_tail>
+	<empty>
 
 struct_declarator_list_tail
 	, <struct_declarator> <struct_declarator_list_tail>
+	<empty>
 
 enumerator_list_tail
 	, <enumerator> <enumerator_list_tail>
+	<empty>
 
 direct_declarator_tail
 	[ <type_qualifier_list> <assignment_expression> ] <direct_declarator_tail>
@@ -383,15 +400,19 @@ direct_declarator_tail
 	( <parameter_type_list> ) <direct_declarator_tail>
 	( <identifier_list> ) <direct_declarator_tail>
 	( ) <direct_declarator_tail>
+	<empty>
 
 type_qualifier_list_tail
 	<type_qualifier> <type_qualifier_list_tail>
+	<empty>
 
 parameter_list_tail
 	, <parameter_declaration> <parameter_list_tail>
+	<empty>
 
 identifier_list_tail
 	, IDENTIFIER <identifier_list_tail>
+	<empty>
 
 direct_abstract_declarator_tail
 	[ ] <direct_abstract_declarator_tail>
@@ -399,19 +420,25 @@ direct_abstract_declarator_tail
 	[ * ] <direct_abstract_declarator_tail>
 	( ) <direct_abstract_declarator_tail>
 	( <parameter_type_list> ) <direct_abstract_declarator_tail>
+	<empty>
 
 initializer_list_tail
 	, <initializer> <initializer_list_tail>
 	, <designation> <initializer> <initializer_list_tail>
+	<empty>
 
 designator_list_tail
 	<designator> <designator_list_tail>
+	<empty>
 
 block_item_list_tail
 	<block_item> <block_item_list_tail>
+	<empty>
 
 translation_unit_tail
 	<external_declaration> <translation_unit_tail>
+	<empty>
 
 declaration_list_tail
 	<declaration> <declaration_list_tail>
+	<empty>

@@ -1,15 +1,15 @@
-declare module 'node-c-interpreter/lib/Lexer' {
+declare module 'node-c-interpreter/lib/lexer/Lexer' {
 	/**
 	 * Created by mmhunter on 08/07/2017.
 	 */
 	export class Lexer {
 	    srcText: string;
 	    tokens: Token[];
+	    supportTokens: any[];
 	    errors: any[];
 	    private currentIndex;
 	    private currentLine;
 	    private currentOffset;
-	    private supportTokens;
 	    constructor(text: string);
 	    nextChar(count?: number): string;
 	    lex(): Token[];
@@ -211,7 +211,7 @@ declare module 'node-c-interpreter/lib/Lexer' {
 
 }
 declare module 'node-c-interpreter/index' {
-	import { Lexer, TokenType } from 'node-c-interpreter/lib/Lexer';
+	import { Lexer, TokenType } from 'node-c-interpreter/lib/lexer/Lexer';
 	/**
 	 * Created by mmhunter on 08/07/2017.
 	 */
@@ -219,5 +219,67 @@ declare module 'node-c-interpreter/index' {
 	    Lexer: typeof Lexer;
 	    TokenType: typeof TokenType;
 	};
+
+}
+declare module 'node-c-interpreter/lib/parser/productions/ProductionRule' {
+	import { ASTNode, TokenStream } from 'node-c-interpreter/lib/parser/Parser';
+	/**
+	 * @file ProductionRule.class.js
+	 *
+	 * Created by mmhunter on 11/07/2017.
+	 */
+	export interface IProductionRule {
+	    readonly name: any;
+	    apply(tokenStream: TokenStream): ASTNode;
+	}
+
+}
+declare module 'node-c-interpreter/lib/parser/Parser' {
+	import { Token } from "node-c-interpreter/lib/lexer/Lexer";
+	import { IProductionRule } from 'node-c-interpreter/lib/parser/productions/ProductionRule';
+	/**
+	 * @file Parser.class.js
+	 *
+	 * Created by mmhunter on 09/07/2017.
+	 */
+	export class Parser {
+	    private tokens;
+	    private ASTRoot;
+	    constructor(tokens: Token[]);
+	    private program();
+	}
+	export class TokenStream {
+	    private tokens;
+	    private index;
+	    constructor(tokens: Token[]);
+	    currentToken(): Token;
+	    nextToken(k?: number): Token;
+	    lookAhead(k?: number): Token;
+	}
+	export class ASTNode {
+	    parent: ASTNode;
+	}
+	export class NonTerminal extends ASTNode {
+	    childHead: ASTNode;
+	    nextSibling: ASTNode;
+	    childTail: ASTNode;
+	    production: IProductionRule;
+	}
+	export class Terminal extends ASTNode {
+	    token: Token;
+	    constructor(token: Token);
+	}
+
+}
+declare module 'node-c-interpreter/lib/parser/productions/PrimaryExpression' {
+	import { IProductionRule } from 'node-c-interpreter/lib/parser/productions/ProductionRule';
+	import { ASTNode, TokenStream } from 'node-c-interpreter/lib/parser/Parser';
+	/**
+	 * Created by mmhunter on 11/07/2017.
+	 */
+	export class PrimaryExpression implements IProductionRule {
+	    readonly name: string;
+	    apply(tokenStream: TokenStream): ASTNode;
+	}
 
 }

@@ -1,4 +1,4 @@
-import {Lexer, TokenType} from "./lib/Lexer";
+import {Lexer, TokenType} from "./lib/lexer/Lexer";
 /**
  * Created by mmhunter on 08/07/2017.
  */
