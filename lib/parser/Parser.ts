@@ -55,6 +55,18 @@ export class TokenStream{
         return this.index;
     }
 
+    public checkFirst(setOrType: Array <TokenType | string> | TokenType | string): boolean{
+        if (!this.lookAhead()){
+            return false;
+        }
+        if (setOrType instanceof Array){
+            return setOrType.indexOf(this.lookAhead().type) !== -1;
+        }
+        else {
+            return setOrType === this.lookAhead().type;
+        }
+
+    }
 }
 
 export class ASTNode {
@@ -99,7 +111,7 @@ export class Terminal extends ASTNode{
 
 }
 
-export function check_rules(rules: Array<(IProductionRule | TokenType | string)>, tokenStream: TokenStream, nonTerminal: IProductionRule): ASTNode {
+export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule): ASTNode {
 
     let parent = new NonTerminal(nonTerminal);
     for (let rule of rules){
@@ -107,9 +119,10 @@ export function check_rules(rules: Array<(IProductionRule | TokenType | string)>
         if (rule.hasOwnProperty("apply")){
             node = (rule as IProductionRule).apply(tokenStream);
         }
-        else if (rule instanceof TokenType || typeof rule === "string"){
+        else {
             if (tokenStream.lookAhead().type === rule){
-                node = (rule as IProductionRule).apply(tokenStream);
+                let token = tokenStream.nextToken();
+                node = new Terminal(token);
             }
         }
 

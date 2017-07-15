@@ -7,7 +7,9 @@
  */
 let fs = require("fs");
 
-let grammarstring = fs.readFileSync("./c-grammar.txt","utf8");
+let path = require("path");
+
+let grammarstring = fs.readFileSync(path.join(__dirname,"./c-grammar.txt"),"utf8");
 
 let lines = grammarstring.split("\n");
 
@@ -131,7 +133,7 @@ for(let key in productions){
 
 //console.log(productions);
 
-let template = fs.readFileSync("template.ts","utf8");
+let template = fs.readFileSync(path.join(__dirname,"template.ts"),"utf8");
 
 function camelCasedd(myString) {
     let s = myString.replace(/_([a-z])/g, function (g) { return g[1].toUpperCase(); });
@@ -139,17 +141,82 @@ function camelCasedd(myString) {
     return s;
 }
 
+
+
+let firstSets = {};
+
 for(let key in productions){
-    console.log(key);
+    findFirstSet(key);
+}
+
+function findFirstSet(key){
+    if(!firstSets[key]){
+        let firstSet = [];
+        console.log(key);
+        let allowEmpty = false;
+        productions[key].forEach(prod=>{
+            let first = prod[0];
+            if(first === "<empty>"){
+                allowEmpty = true;
+            }
+            else if(first.indexOf("<") === 0 && first.indexOf(">") !== -1){
+                let f = findFirstSet(first.substr(1,first.length-2));
+                if(f === -1){
+                    if(prod.length === 1){
+                        allowEmpty = true;
+                    }
+                    else{
+
+                    }
+                }
+                else {
+                    f.forEach(s=>{
+                        if(firstSet.indexOf(s) === -1){
+                            firstSet.push(s);
+                        }
+                    });
+                }
+            }
+            else{
+                if(firstSet.indexOf(first) === -1){
+                    firstSet.push(first);
+                }
+
+            }
+        });
+        if(allowEmpty){
+            firstSets[key] = -1;
+        }
+        else firstSets[key] = firstSet;
+    }
+    return firstSets[key];
+}
+
+// console.log(firstSets);
+
+for(let key in productions){
+    let rules = [key];
     productions[key].forEach(prod=>{
-        console.log("\t"+prod.join(" "));
+        rules.push("    "+prod.join(" "));
     });
-    console.log("");
+    let rulesString = rules.join("\n * ");
 
     let camelCased = camelCasedd(key);
     let code = template.replace("${NAME}",key).replace("${CAMEL_NAME}",camelCasedd(key));
+    let firstSetString;
+    if(firstSets[key] === -1){
+        firstSetString = "null";
+    }
+    else firstSetString = "["+ firstSets[key].map(f=>{
+        if(/^[A-Z]/.test(f)){
+            return `TokenType.${f}`;
+        }
+        else{
+            return `"${f}"`;
+        }
+    }).join(", ")+"]";
+    code = code. replace("${firstSet}",firstSetString).replace("${rule}",rulesString);
 
-    fs.writeFile(`./rules/${camelCased}.ts`,code,'utf8');
+
+    fs.writeFile(path.join(__dirname,`./rules/${camelCased}.ts`),code,'utf8');
 }
-
-

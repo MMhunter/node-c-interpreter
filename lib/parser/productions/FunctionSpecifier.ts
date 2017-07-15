@@ -1,7 +1,15 @@
+/**
+ * rule:
+ * function_specifier
+ *     INLINE
+ */
+import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
-import {ASTNode, TokenStream} from "../Parser";
+import {TokenType} from "../../lexer/Lexer";
 
 export class FunctionSpecifier implements IProductionRule {
+
+    public static readonly firstSet = [TokenType.INLINE];
 
     public readonly name = "function_specifier";
 

@@ -8,6 +8,8 @@ import {Expression} from "./Expression";
  */
 export class PrimaryExpression implements IProductionRule{
 
+    public static readonly firstSet = [TokenType.IDENTIFIER, TokenType.CONSTANT, TokenType.STRING_LITERAL, "("];
+
     public readonly name = "primary_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
@@ -28,7 +30,7 @@ export class PrimaryExpression implements IProductionRule{
         }
         if (tokenStream.lookAhead().type === "("){
             let savedIndex = tokenStream.currentIndex();
-            let node = check_rules(["(", Expression, ")"], tokenStream, this);
+            let node = check_rules(["(", new Expression(), ")"], tokenStream, this);
             if ( node ){
                 return node;
             }
