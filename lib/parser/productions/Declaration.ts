@@ -7,6 +7,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {DeclarationSpecifiers} from "./DeclarationSpecifiers";
+import {InitDeclaratorList} from "./InitDeclaratorList";
 
 export class Declaration implements IProductionRule {
 
@@ -15,7 +17,8 @@ export class Declaration implements IProductionRule {
     public readonly name = "declaration";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return check_rules([new DeclarationSpecifiers(), new InitDeclaratorList(), ";"], tokenStream, this)
+            || check_rules([new DeclarationSpecifiers()], tokenStream , this);
     }
 
 }

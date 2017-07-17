@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {EqualityExpression} from "./EqualityExpression";
+import {AndExpressionTail} from "./AndExpressionTail";
 
 export class AndExpression implements IProductionRule {
 
@@ -14,6 +16,9 @@ export class AndExpression implements IProductionRule {
     public readonly name = "and_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst(EqualityExpression.firstSet)){
+           return check_rules([new EqualityExpression(), new AndExpressionTail()], tokenStream, this);
+        }
         return null;
     }
 

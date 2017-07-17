@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {EnumeratorListTail} from "./EnumeratorListTail";
+import {Enumerator} from "./Enumerator";
 
 export class EnumeratorList implements IProductionRule {
 
@@ -14,7 +16,7 @@ export class EnumeratorList implements IProductionRule {
     public readonly name = "enumerator_list";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return check_rules([new Enumerator(), new EnumeratorListTail()], tokenStream, this);
     }
 
 }

@@ -10,6 +10,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {EnumeratorList} from "./EnumeratorList";
 
 export class EnumSpecifier implements IProductionRule {
 
@@ -18,6 +19,18 @@ export class EnumSpecifier implements IProductionRule {
     public readonly name = "enum_specifier";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst(TokenType.ENUM)){
+            if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === TokenType.IDENTIFIER){
+                return check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new　EnumeratorList(), ",", "}"], tokenStream, this)
+                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new EnumeratorList(), "}"], tokenStream, this)
+                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER], tokenStream, this);
+            }
+            else if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === "{"){
+                return check_rules([TokenType.ENUM, "{", new　EnumeratorList(), ",", "}"], tokenStream, this)
+                    || check_rules([TokenType.ENUM, "{", new EnumeratorList(), "}"], tokenStream, this);
+
+            }
+        }
         return null;
     }
 

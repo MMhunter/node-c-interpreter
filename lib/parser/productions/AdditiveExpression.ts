@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {MultiplicativeExpression} from "./MultiplicativeExpression";
+import {AdditiveExpressionTail} from "./AdditiveExpressionTail";
 
 export class AdditiveExpression implements IProductionRule {
 
@@ -14,6 +16,9 @@ export class AdditiveExpression implements IProductionRule {
     public readonly name = "additive_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst(MultiplicativeExpression.firstSet)){
+            return check_rules([new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this);
+        }
         return null;
     }
 

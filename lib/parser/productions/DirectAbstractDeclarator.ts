@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AbstractDeclarator} from "./AbstractDeclarator";
+import {DirectAbstractDeclaratorTail} from "./DirectAbstractDeclaratorTail";
 
 export class DirectAbstractDeclarator implements IProductionRule {
 
@@ -14,6 +16,9 @@ export class DirectAbstractDeclarator implements IProductionRule {
     public readonly name = "direct_abstract_declarator";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst("(")){
+            return check_rules(["(", new AbstractDeclarator, ")", new DirectAbstractDeclaratorTail()], tokenStream, this);
+        }
         return null;
     }
 

@@ -18,18 +18,13 @@ export class AbstractDeclarator implements IProductionRule {
     public readonly name = "abstract_declarator";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        let savedIndex = tokenStream.currentIndex();
 
-        if ( tokenStream.checkFirst(Pointer.firstSet) && !tokenStream.checkFirst(DirectAbstractDeclarator.firstSet)){
-            let node = check_rules([new Pointer(), new DirectAbstractDeclarator()], tokenStream, this);
-            if (node){
-                return node;
-            }
-            else{
-                tokenStream.setIndex(savedIndex);
-            }
-            node = check_rules([new Pointer(), new DirectAbstractDeclarator()], tokenStream, this);
-
+        // Fistsets of Pointer nad DirectAbstractDeclarator has no intersection
+        if ( tokenStream.checkFirst(Pointer.firstSet)){
+            return check_rules([new Pointer(), new DirectAbstractDeclarator()], tokenStream, this) || check_rules([new Pointer()], tokenStream, this);
+        }
+        else if (tokenStream.checkFirst(DirectAbstractDeclarator.firstSet)){
+            return check_rules([new DirectAbstractDeclarator()], tokenStream, this);
         }
 
         return null;

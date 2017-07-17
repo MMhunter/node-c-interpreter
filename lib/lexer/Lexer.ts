@@ -426,6 +426,8 @@ export enum TokenType {
     NE_OP,
 
     COMMENT,
+
+    TYPE_NAME, // used in parser
 }
 
 export const keywords = {

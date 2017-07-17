@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {Declaration} from "./Declaration";
 
 export class DeclarationListTail implements IProductionRule {
 
@@ -15,7 +16,12 @@ export class DeclarationListTail implements IProductionRule {
     public readonly name = "declaration_list_tail";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        if (tokenStream.checkFirst(Declaration.firstSet)){
+            return check_rules([new Declaration(), new DeclarationListTail()], tokenStream, this);
+        }
+        else{
+            return check_rules([], tokenStream, this);
+        }
     }
 
 }

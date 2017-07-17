@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {RelationalExpression} from "./RelationalExpression";
+import {EqualityExpressionTail} from "./EqualityExpressionTail";
 
 export class EqualityExpression implements IProductionRule {
 
@@ -14,7 +16,7 @@ export class EqualityExpression implements IProductionRule {
     public readonly name = "equality_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return check_rules([new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this);
     }
 
 }

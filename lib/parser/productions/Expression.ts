@@ -17,14 +17,7 @@ export class Expression implements IProductionRule {
 
     public apply(tokenStream: TokenStream): ASTNode {
         if ( tokenStream.checkFirst(AssignmentExpression.firstSet) ){
-            let savedIndex = tokenStream.currentIndex();
-            let node = check_rules([new AssignmentExpression(), new ExpressionTail()], tokenStream, this);
-            if (node){
-                return node;
-            }
-            else{
-                tokenStream.setIndex(savedIndex);
-            }
+            return check_rules([new AssignmentExpression(), new ExpressionTail()], tokenStream, this);
         }
         return null;
     }

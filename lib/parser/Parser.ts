@@ -114,13 +114,14 @@ export class Terminal extends ASTNode{
 export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule): ASTNode {
 
     let parent = new NonTerminal(nonTerminal);
+    let savedIndex = tokenStream.currentIndex();
     for (let rule of rules){
         let node;
         if (rule.hasOwnProperty("apply")){
             node = (rule as IProductionRule).apply(tokenStream);
         }
         else {
-            if (tokenStream.lookAhead().type === rule){
+            if (tokenStream.lookAhead() && tokenStream.lookAhead().type === rule){
                 let token = tokenStream.nextToken();
                 node = new Terminal(token);
             }
@@ -130,7 +131,9 @@ export function check_rules(rules: Array< IProductionRule | TokenType | string>,
             parent.addChild(node);
         }
         else {
+            tokenStream.setIndex(savedIndex);
             return null;
         }
     }
+    return parent;
 }

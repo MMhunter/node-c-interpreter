@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AssignmentExpression} from "./AssignmentExpression";
+import {ArgumentExpressionListTail} from "./ArgumentExpressionListTail";
 
 export class ArgumentExpressionList implements IProductionRule {
 
@@ -14,6 +16,11 @@ export class ArgumentExpressionList implements IProductionRule {
     public readonly name = "argument_expression_list";
 
     public apply(tokenStream: TokenStream): ASTNode {
+
+        if (tokenStream.checkFirst(AssignmentExpression.firstSet)){
+            return check_rules([new AssignmentExpression(), new ArgumentExpressionListTail()], tokenStream, this);
+        }
+
         return null;
     }
 

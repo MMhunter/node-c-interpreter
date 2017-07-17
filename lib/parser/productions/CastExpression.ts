@@ -7,6 +7,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {TypeName} from "./TypeName";
+import {UnaryExpression} from "./UnaryExpression";
 
 export class CastExpression implements IProductionRule {
 
@@ -15,6 +17,13 @@ export class CastExpression implements IProductionRule {
     public readonly name = "cast_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if ( tokenStream.checkFirst("(")){
+           return check_rules(["(", new TypeName(), ")", new CastExpression()], tokenStream, this)
+            || check_rules([new UnaryExpression()], tokenStream, this);
+        }
+        else if (tokenStream.checkFirst(UnaryExpression.firstSet)){
+            return check_rules([new UnaryExpression()], tokenStream, this);
+        }
         return null;
     }
 

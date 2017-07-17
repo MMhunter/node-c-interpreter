@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AssignmentExpression} from "./AssignmentExpression";
 
 export class ExpressionTail implements IProductionRule {
 
@@ -15,7 +16,12 @@ export class ExpressionTail implements IProductionRule {
     public readonly name = "expression_tail";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        if (tokenStream.checkFirst(",")){
+            return check_rules([",", new AssignmentExpression(), new ExpressionTail()], tokenStream, this);
+        }
+        else{
+            return check_rules([], tokenStream, this);
+        }
     }
 
 }

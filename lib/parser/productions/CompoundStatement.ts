@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {BlockItemList} from "./BlockItemList";
 
 export class CompoundStatement implements IProductionRule {
 
@@ -15,6 +16,17 @@ export class CompoundStatement implements IProductionRule {
     public readonly name = "compound_statement";
 
     public apply(tokenStream: TokenStream): ASTNode {
+
+        if (tokenStream.checkFirst("{")){
+            if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === "}"){
+                return check_rules(["{", "}"], tokenStream, this);
+            }
+            else{
+                return check_rules(["{", new BlockItemList(), "}"], tokenStream, this);
+            }
+        }
+
+
         return null;
     }
 

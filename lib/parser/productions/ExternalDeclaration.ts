@@ -7,6 +7,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {FunctionDefinition} from "./FunctionDefinition";
+import {Declaration} from "./Declaration";
 
 export class ExternalDeclaration implements IProductionRule {
 
@@ -15,7 +17,8 @@ export class ExternalDeclaration implements IProductionRule {
     public readonly name = "external_declaration";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+
+        return check_rules([new FunctionDefinition()], tokenStream, this) || check_rules([new Declaration()], tokenStream, this);
     }
 
 }

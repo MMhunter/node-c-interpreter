@@ -7,6 +7,9 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {ConditionalExpression} from "./ConditionalExpression";
+import {UnaryExpression} from "./UnaryExpression";
+import {AssignmentOperator} from "./AssignmentOperator";
 
 export class AssignmentExpression implements IProductionRule {
 
@@ -15,7 +18,10 @@ export class AssignmentExpression implements IProductionRule {
     public readonly name = "assignment_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+
+        return check_rules([new ConditionalExpression()], tokenStream, this )
+            || check_rules([new UnaryExpression(), new AssignmentOperator(), new AssignmentExpression()], tokenStream, this);
+
     }
 
 }

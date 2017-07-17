@@ -6,6 +6,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {ConditionalExpression} from "./ConditionalExpression";
 
 export class ConstantExpression implements IProductionRule {
 
@@ -14,6 +15,9 @@ export class ConstantExpression implements IProductionRule {
     public readonly name = "constant_expression";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst(ConditionalExpression.firstSet)){
+            return check_rules([new ConditionalExpression()], tokenStream, this);
+        }
         return null;
     }
 

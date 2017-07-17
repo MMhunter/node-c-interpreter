@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AndExpression} from "./AndExpression";
 
 export class ExclusiveOrExpressionTail implements IProductionRule {
 
@@ -15,7 +16,12 @@ export class ExclusiveOrExpressionTail implements IProductionRule {
     public readonly name = "exclusive_or_expression_tail";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        if (tokenStream.checkFirst("^")){
+           return check_rules(["^", new AndExpression(), new ExclusiveOrExpressionTail()], tokenStream, this);
+        }
+        else{
+            return check_rules([], tokenStream, this);
+        }
     }
 
 }

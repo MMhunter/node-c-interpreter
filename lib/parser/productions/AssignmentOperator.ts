@@ -24,6 +24,12 @@ export class AssignmentOperator implements IProductionRule {
     public readonly name = "assignment_operator";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        for (let tokenType of AssignmentOperator.firstSet){
+           let node = check_rules([tokenType], tokenStream, this);
+           if (node){
+               return node;
+           }
+        }
         return null;
     }
 
