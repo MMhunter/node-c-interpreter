@@ -6,6 +6,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {IdentifierListTail} from "./IdentifierListTail";
 
 export class IdentifierList implements IProductionRule {
 
@@ -14,7 +15,7 @@ export class IdentifierList implements IProductionRule {
     public readonly name = "identifier_list";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return check_rules([TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this);
     }
 
 }

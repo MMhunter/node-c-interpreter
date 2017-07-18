@@ -14,7 +14,7 @@ export class FunctionSpecifier implements IProductionRule {
     public readonly name = "function_specifier";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return check_rules([TokenType.INLINE], tokenStream, this);
     }
 
 }

@@ -7,6 +7,10 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {DeclarationSpecifiers} from "./DeclarationSpecifiers";
+import {Declarator} from "./Declarator";
+import {DeclarationList} from "./DeclarationList";
+import {CompoundStatement} from "./CompoundStatement";
 
 export class FunctionDefinition implements IProductionRule {
 
@@ -15,6 +19,10 @@ export class FunctionDefinition implements IProductionRule {
     public readonly name = "function_definition";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst(DeclarationSpecifiers.firstSet)){
+            return check_rules([new DeclarationSpecifiers(), new Declarator(), new DeclarationList(), new CompoundStatement()], tokenStream, this)
+                || check_rules([new DeclarationSpecifiers(), new Declarator(), new CompoundStatement()], tokenStream, this);
+        }
         return null;
     }
 

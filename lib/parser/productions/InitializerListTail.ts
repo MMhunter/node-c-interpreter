@@ -8,6 +8,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {Designation} from "./Designation";
+import {Initializer} from "./Initializer";
 
 export class InitializerListTail implements IProductionRule {
 
@@ -16,7 +18,11 @@ export class InitializerListTail implements IProductionRule {
     public readonly name = "initializer_list_tail";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        if (tokenStream.checkFirst(",")){
+            return check_rules([",", new Designation(), new Initializer(), new InitializerListTail()], tokenStream, this)
+                || check_rules([",", new Initializer(), new InitializerListTail()], tokenStream, this);
+        }
+        return check_rules([], tokenStream, this);
     }
 
 }

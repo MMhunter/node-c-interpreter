@@ -15,7 +15,10 @@ export class IdentifierListTail implements IProductionRule {
     public readonly name = "identifier_list_tail";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        if (tokenStream.checkFirst(",")){
+            return check_rules([",", TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this);
+        }
+        return check_rules([], tokenStream, this);
     }
 
 }

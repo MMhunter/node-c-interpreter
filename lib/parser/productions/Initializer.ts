@@ -8,6 +8,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AssignmentExpression} from "./AssignmentExpression";
+import {InitializerList} from "./InitializerList";
 
 export class Initializer implements IProductionRule {
 
@@ -16,6 +18,13 @@ export class Initializer implements IProductionRule {
     public readonly name = "initializer";
 
     public apply(tokenStream: TokenStream): ASTNode {
+        if (tokenStream.checkFirst("<")){
+            return check_rules(["<", new　AssignmentExpression(), ">"], tokenStream, this);
+        }
+        else if (tokenStream.checkFirst("{")){
+            return check_rules(["{", new InitializerList(), ",", "}"], tokenStream, this)
+                || check_rules(["{", new InitializerList(), "}"], tokenStream, this);
+        }
         return null;
     }
 
