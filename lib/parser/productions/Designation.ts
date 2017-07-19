@@ -14,10 +14,10 @@ export class Designation implements IProductionRule {
 
     public readonly name = "designation";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
         if (tokenStream.checkFirst(DesignatorList.firstSet)){
-            return check_rules([new DesignatorList(), "="], tokenStream, this);
+            return check_rules([new DesignatorList(), "="], tokenStream, this, parent);
         }
 
         return null;

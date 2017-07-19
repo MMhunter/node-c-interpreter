@@ -18,16 +18,16 @@ export class EnumSpecifier implements IProductionRule {
 
     public readonly name = "enum_specifier";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(TokenType.ENUM)){
             if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === TokenType.IDENTIFIER){
-                return check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new　EnumeratorList(), ",", "}"], tokenStream, this)
-                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new EnumeratorList(), "}"], tokenStream, this)
-                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER], tokenStream, this);
+                return check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new　EnumeratorList(), ",", "}"], tokenStream, this, parent)
+                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER, "{", new EnumeratorList(), "}"], tokenStream, this, parent)
+                    || check_rules([TokenType.ENUM, TokenType.IDENTIFIER], tokenStream, this, parent);
             }
             else if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === "{"){
-                return check_rules([TokenType.ENUM, "{", new　EnumeratorList(), ",", "}"], tokenStream, this)
-                    || check_rules([TokenType.ENUM, "{", new EnumeratorList(), "}"], tokenStream, this);
+                return check_rules([TokenType.ENUM, "{", new　EnumeratorList(), ",", "}"], tokenStream, this, parent)
+                    || check_rules([TokenType.ENUM, "{", new EnumeratorList(), "}"], tokenStream, this, parent);
 
             }
         }

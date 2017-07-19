@@ -17,10 +17,9 @@ export class AssignmentExpression implements IProductionRule {
 
     public readonly name = "assignment_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
-        return check_rules([new ConditionalExpression()], tokenStream, this )
-            || check_rules([new UnaryExpression(), new AssignmentOperator(), new AssignmentExpression()], tokenStream, this);
+        return check_rules([new UnaryExpression(), new AssignmentOperator(), new AssignmentExpression()], tokenStream, this, parent) || check_rules([new ConditionalExpression()], tokenStream, this, parent);
 
     }
 

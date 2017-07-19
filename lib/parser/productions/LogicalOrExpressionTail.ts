@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {LogicalAndExpression} from "./LogicalAndExpression";
 
 export class LogicalOrExpressionTail implements IProductionRule {
 
@@ -14,8 +15,8 @@ export class LogicalOrExpressionTail implements IProductionRule {
 
     public readonly name = "logical_or_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.OR_OP, new LogicalAndExpression(), new LogicalOrExpressionTail()], tokenStream, this, parent) || check_rules([], tokenStream, this, parent);
     }
 
 }

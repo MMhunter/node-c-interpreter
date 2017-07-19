@@ -14,8 +14,8 @@ export class StructOrUnion implements IProductionRule {
 
     public readonly name = "struct_or_union";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.STRUCT], tokenStream, this, parent) || check_rules([TokenType.UNION], tokenStream, this, parent);
     }
 
 }

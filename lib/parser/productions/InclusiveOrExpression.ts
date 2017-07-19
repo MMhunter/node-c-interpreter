@@ -15,8 +15,8 @@ export class InclusiveOrExpression implements IProductionRule {
 
     public readonly name = "inclusive_or_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new ExclusiveOrExpression(), new InclusiveOrExpressionTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new ExclusiveOrExpression(), new InclusiveOrExpressionTail()], tokenStream, this, parent);
     }
 
 }

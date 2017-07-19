@@ -15,9 +15,9 @@ export class DesignatorList implements IProductionRule {
 
     public readonly name = "designator_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(Designator.firstSet)){
-            return check_rules([new Designator(), new DesignatorListTail()], tokenStream, this);
+            return check_rules([new Designator(), new DesignatorListTail()], tokenStream, this, parent);
         }
         return null;
     }

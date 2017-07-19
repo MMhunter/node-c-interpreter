@@ -15,10 +15,10 @@ export class ArgumentExpressionList implements IProductionRule {
 
     public readonly name = "argument_expression_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
         if (tokenStream.checkFirst(AssignmentExpression.firstSet)){
-            return check_rules([new AssignmentExpression(), new ArgumentExpressionListTail()], tokenStream, this);
+            return check_rules([new AssignmentExpression(), new ArgumentExpressionListTail()], tokenStream, this, parent);
         }
 
         return null;

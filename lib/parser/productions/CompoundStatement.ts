@@ -15,14 +15,14 @@ export class CompoundStatement implements IProductionRule {
 
     public readonly name = "compound_statement";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
         if (tokenStream.checkFirst("{")){
             if (tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === "}"){
-                return check_rules(["{", "}"], tokenStream, this);
+                return check_rules(["{", "}"], tokenStream, this, parent);
             }
             else{
-                return check_rules(["{", new BlockItemList(), "}"], tokenStream, this);
+                return check_rules(["{", new BlockItemList(), "}"], tokenStream, this, parent);
             }
         }
 

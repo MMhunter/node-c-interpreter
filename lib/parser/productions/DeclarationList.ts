@@ -15,9 +15,9 @@ export class DeclarationList implements IProductionRule {
 
     public readonly name = "declaration_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if ( tokenStream.checkFirst(Declaration.firstSet)){
-            return check_rules([new Declaration(), new DeclarationListTail()], tokenStream, this);
+            return check_rules([new Declaration(), new DeclarationListTail()], tokenStream, this, parent);
         }
         return null;
     }

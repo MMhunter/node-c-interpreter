@@ -15,12 +15,12 @@ export class DeclarationListTail implements IProductionRule {
 
     public readonly name = "declaration_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(Declaration.firstSet)){
-            return check_rules([new Declaration(), new DeclarationListTail()], tokenStream, this);
+            return check_rules([new Declaration(), new DeclarationListTail()], tokenStream, this, parent);
         }
         else{
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

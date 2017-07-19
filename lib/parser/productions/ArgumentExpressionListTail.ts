@@ -15,12 +15,12 @@ export class ArgumentExpressionListTail implements IProductionRule {
 
     public readonly name = "argument_expression_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(",")){
-            return check_rules([",", new AssignmentExpression(), new ArgumentExpressionListTail()], tokenStream, this);
+            return check_rules([",", new AssignmentExpression(), new ArgumentExpressionListTail()], tokenStream, this, parent);
         }
         else {
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

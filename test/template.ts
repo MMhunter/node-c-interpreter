@@ -13,7 +13,7 @@ export class ${CAMEL_NAME} implements IProductionRule {
     public readonly name = "${NAME}";
 
     public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+        return ${RETURN};
     }
 
 }

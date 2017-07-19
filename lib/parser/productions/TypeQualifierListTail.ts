@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {TypeQualifier} from "./TypeQualifier";
 
 export class TypeQualifierListTail implements IProductionRule {
 
@@ -14,8 +15,9 @@ export class TypeQualifierListTail implements IProductionRule {
 
     public readonly name = "type_qualifier_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new TypeQualifier(), new TypeQualifierListTail()], tokenStream, this, parent)
+            || check_rules([], tokenStream, this, parent);
     }
 
 }

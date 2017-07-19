@@ -15,12 +15,12 @@ export class EnumeratorListTail implements IProductionRule {
 
     public readonly name = "enumerator_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(",")){
-           return check_rules([",", new Enumerator(), new EnumeratorListTail()], tokenStream, this);
+           return check_rules([",", new Enumerator(), new EnumeratorListTail()], tokenStream, this, parent);
         }
         else{
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

@@ -15,10 +15,10 @@ export class Enumerator implements IProductionRule {
 
     public readonly name = "enumerator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(TokenType.IDENTIFIER)) {
-            return check_rules([TokenType.IDENTIFIER, "=", new ConstantExpression()], tokenStream, this)
-                || check_rules([TokenType.IDENTIFIER], tokenStream, this);
+            return check_rules([TokenType.IDENTIFIER, "=", new ConstantExpression()], tokenStream, this, parent)
+                || check_rules([TokenType.IDENTIFIER], tokenStream, this, parent);
         }
         return null;
     }

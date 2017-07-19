@@ -16,13 +16,13 @@ export class CastExpression implements IProductionRule {
 
     public readonly name = "cast_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if ( tokenStream.checkFirst("(")){
-           return check_rules(["(", new TypeName(), ")", new CastExpression()], tokenStream, this)
-            || check_rules([new UnaryExpression()], tokenStream, this);
+           return check_rules(["(", new TypeName(), ")", new CastExpression()], tokenStream, this, parent)
+            || check_rules([new UnaryExpression()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(UnaryExpression.firstSet)){
-            return check_rules([new UnaryExpression()], tokenStream, this);
+            return check_rules([new UnaryExpression()], tokenStream, this, parent);
         }
         return null;
     }

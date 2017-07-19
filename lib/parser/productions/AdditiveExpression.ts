@@ -15,9 +15,9 @@ export class AdditiveExpression implements IProductionRule {
 
     public readonly name = "additive_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(MultiplicativeExpression.firstSet)){
-            return check_rules([new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this);
+            return check_rules([new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this, parent);
         }
         return null;
     }

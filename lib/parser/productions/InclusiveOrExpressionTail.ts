@@ -15,11 +15,11 @@ export class InclusiveOrExpressionTail implements IProductionRule {
 
     public readonly name = "inclusive_or_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst("|")){
-            return check_rules(["|", new ExclusiveOrExpression(), new InclusiveOrExpressionTail()], tokenStream, this);
+            return check_rules(["|", new ExclusiveOrExpression(), new InclusiveOrExpressionTail()], tokenStream, this, parent);
         }
-        return check_rules([], tokenStream, this);
+        return check_rules([], tokenStream, this, parent);
     }
 
 }

@@ -15,8 +15,8 @@ export class EqualityExpression implements IProductionRule {
 
     public readonly name = "equality_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this, parent);
     }
 
 }

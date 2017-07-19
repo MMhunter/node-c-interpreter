@@ -15,8 +15,8 @@ export class EnumeratorList implements IProductionRule {
 
     public readonly name = "enumerator_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new Enumerator(), new EnumeratorListTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new Enumerator(), new EnumeratorListTail()], tokenStream, this, parent);
     }
 
 }

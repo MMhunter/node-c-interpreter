@@ -14,9 +14,9 @@ export class DirectDeclarator implements IProductionRule {
 
     public readonly name = "direct_declarator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(TokenType.IDENTIFIER)){
-            return check_rules([TokenType.IDENTIFIER, new DirectDeclaratorTail()], tokenStream, this);
+            return check_rules([TokenType.IDENTIFIER, new DirectDeclaratorTail()], tokenStream, this, parent);
         }
         return null;
     }

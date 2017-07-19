@@ -17,14 +17,14 @@ export class AbstractDeclarator implements IProductionRule {
 
     public readonly name = "abstract_declarator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
         // Fistsets of Pointer nad DirectAbstractDeclarator has no intersection
         if ( tokenStream.checkFirst(Pointer.firstSet)){
-            return check_rules([new Pointer(), new DirectAbstractDeclarator()], tokenStream, this) || check_rules([new Pointer()], tokenStream, this);
+            return check_rules([new Pointer(), new DirectAbstractDeclarator()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(DirectAbstractDeclarator.firstSet)){
-            return check_rules([new DirectAbstractDeclarator()], tokenStream, this);
+            return check_rules([new DirectAbstractDeclarator()], tokenStream, this, parent);
         }
 
         return null;

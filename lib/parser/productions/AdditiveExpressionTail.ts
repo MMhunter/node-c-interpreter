@@ -16,15 +16,15 @@ export class AdditiveExpressionTail implements IProductionRule {
 
     public readonly name = "additive_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
         if (tokenStream.checkFirst("+")){
-            return check_rules(["+", new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this);
+            return check_rules(["+", new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this, parent);
         }
         if (tokenStream.checkFirst("-")){
-            return check_rules(["-", new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this);
+            return check_rules(["-", new MultiplicativeExpression(), new AdditiveExpressionTail()], tokenStream, this, parent);
         }else{
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

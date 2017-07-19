@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {AdditiveExpression} from "./AdditiveExpression";
+import {ShiftExpressionTail} from "./ShiftExpressionTail";
 
 export class ShiftExpression implements IProductionRule {
 
@@ -13,8 +15,8 @@ export class ShiftExpression implements IProductionRule {
 
     public readonly name = "shift_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new AdditiveExpression(), new ShiftExpressionTail()], tokenStream, this, parent);
     }
 
 }

@@ -15,9 +15,9 @@ export class Expression implements IProductionRule {
 
     public readonly name = "expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if ( tokenStream.checkFirst(AssignmentExpression.firstSet) ){
-            return check_rules([new AssignmentExpression(), new ExpressionTail()], tokenStream, this);
+            return check_rules([new AssignmentExpression(), new ExpressionTail()], tokenStream, this, parent);
         }
         return null;
     }

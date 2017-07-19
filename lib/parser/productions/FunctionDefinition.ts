@@ -18,10 +18,10 @@ export class FunctionDefinition implements IProductionRule {
 
     public readonly name = "function_definition";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(DeclarationSpecifiers.firstSet)){
-            return check_rules([new DeclarationSpecifiers(), new Declarator(), new DeclarationList(), new CompoundStatement()], tokenStream, this)
-                || check_rules([new DeclarationSpecifiers(), new Declarator(), new CompoundStatement()], tokenStream, this);
+            return check_rules([new DeclarationSpecifiers(), new Declarator(), new DeclarationList(), new CompoundStatement()], tokenStream, this, parent)
+                || check_rules([new DeclarationSpecifiers(), new Declarator(), new CompoundStatement()], tokenStream, this, parent);
         }
         return null;
     }

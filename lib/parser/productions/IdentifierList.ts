@@ -14,8 +14,8 @@ export class IdentifierList implements IProductionRule {
 
     public readonly name = "identifier_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this, parent);
     }
 
 }

@@ -15,8 +15,8 @@ export class ExclusiveOrExpression implements IProductionRule {
 
     public readonly name = "exclusive_or_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new AndExpression(), new ExclusiveOrExpressionTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new AndExpression(), new ExclusiveOrExpressionTail()], tokenStream, this, parent);
     }
 
 }

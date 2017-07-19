@@ -16,15 +16,15 @@ export class EqualityExpressionTail implements IProductionRule {
 
     public readonly name = "equality_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(TokenType.EQ_OP)){
-            return check_rules([TokenType.EQ_OP, new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this);
+            return check_rules([TokenType.EQ_OP, new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(TokenType.NE_OP)){
-            return check_rules([TokenType.NE_OP, new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this);
+            return check_rules([TokenType.NE_OP, new RelationalExpression(), new EqualityExpressionTail()], tokenStream, this, parent);
         }
         else{
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

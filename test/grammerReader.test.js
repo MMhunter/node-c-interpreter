@@ -196,8 +196,25 @@ function findFirstSet(key){
 
 for(let key in productions){
     let rules = [key];
+    let returns = [];
     productions[key].forEach(prod=>{
         rules.push("    "+prod.join(" "));
+        let rs = prod.map(p=>{
+            if(p.indexOf("<") === 0 && p.indexOf(">") !== -1){
+                return "new "+camelCasedd(p.substr(1,p.length-2))+"()";
+            }
+            else  if(/^[A-Z]/.test(p)){
+                return `TokenType.${p}`;
+            }
+            else {
+                return `"${p}"`
+            }
+        }).join(", ");
+        if(prod[0] === '<empty>'){
+            rs = "";
+        }
+        let returnCode = `check_rules([${rs}], tokenStream, this)`;
+        returns.push(returnCode);
     });
     let rulesString = rules.join("\n * ");
 
@@ -215,7 +232,10 @@ for(let key in productions){
             return `"${f}"`;
         }
     }).join(", ")+"]";
-    code = code. replace("${firstSet}",firstSetString).replace("${rule}",rulesString);
+    code = code. replace("${firstSet}",firstSetString).replace("${rule}",rulesString).replace("${RETURN}", returns.join(" || ") );
+
+
+
 
 
     fs.writeFile(path.join(__dirname,`./rules/${camelCased}.ts`),code,'utf8');

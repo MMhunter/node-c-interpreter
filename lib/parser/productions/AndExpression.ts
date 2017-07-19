@@ -15,9 +15,9 @@ export class AndExpression implements IProductionRule {
 
     public readonly name = "and_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(EqualityExpression.firstSet)){
-           return check_rules([new EqualityExpression(), new AndExpressionTail()], tokenStream, this);
+           return check_rules([new EqualityExpression(), new AndExpressionTail()], tokenStream, this, parent);
         }
         return null;
     }

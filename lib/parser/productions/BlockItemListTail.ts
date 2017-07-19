@@ -15,12 +15,12 @@ export class BlockItemListTail implements IProductionRule {
 
     public readonly name = "block_item_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if ( tokenStream.checkFirst(BlockItem.firstSet)){
-            return check_rules([new BlockItem(), new BlockItemListTail()], tokenStream, this);
+            return check_rules([new BlockItem(), new BlockItemListTail()], tokenStream, this, parent);
         }
         else {
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

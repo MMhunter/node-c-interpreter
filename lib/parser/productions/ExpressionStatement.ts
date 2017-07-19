@@ -15,12 +15,12 @@ export class ExpressionStatement implements IProductionRule {
 
     public readonly name = "expression_statement";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(";")){
-            return check_rules([";"], tokenStream, this);
+            return check_rules([";"], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(Expression.firstSet)){
-            return check_rules([new Expression(), ";"], tokenStream, this);
+            return check_rules([new Expression(), ";"], tokenStream, this, parent);
         }
         return null;
     }

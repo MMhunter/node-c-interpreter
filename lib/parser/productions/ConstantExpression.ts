@@ -14,9 +14,9 @@ export class ConstantExpression implements IProductionRule {
 
     public readonly name = "constant_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(ConditionalExpression.firstSet)){
-            return check_rules([new ConditionalExpression()], tokenStream, this);
+            return check_rules([new ConditionalExpression()], tokenStream, this, parent);
         }
         return null;
     }

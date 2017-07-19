@@ -28,24 +28,24 @@ export class DirectDeclaratorTail implements IProductionRule {
 
     public readonly name = "direct_declarator_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst("[")){
-           return check_rules(["[", new TypeQualifierList(), new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", new TypeQualifierList(), "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[" , new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", TokenType.STATIC,  new TypeQualifierList(), new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", new TypeQualifierList(), TokenType.STATIC, new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", new TypeQualifierList(), "*", "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", "*", "]", new DirectDeclaratorTail()], tokenStream, this)
-               || check_rules(["[", "]", new DirectDeclaratorTail()], tokenStream, this) ;
+           return check_rules(["[", new TypeQualifierList(), new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", new TypeQualifierList(), "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[" , new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", TokenType.STATIC,  new TypeQualifierList(), new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", new TypeQualifierList(), TokenType.STATIC, new AssignmentExpression(), "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", new TypeQualifierList(), "*", "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", "*", "]", new DirectDeclaratorTail()], tokenStream, this, parent)
+               || check_rules(["[", "]", new DirectDeclaratorTail()], tokenStream, this, parent) ;
         }
         else if (tokenStream.checkFirst("(")){
-            return check_rules(["(", new ParameterTypeList(), ")", new DirectDeclaratorTail()], tokenStream, this)
-                || check_rules(["(", new IdentifierList(), ")", new DirectDeclaratorTail()], tokenStream, this)
-                || check_rules(["(", ")", new DirectDeclaratorTail()], tokenStream, this);
+            return check_rules(["(", new ParameterTypeList(), ")", new DirectDeclaratorTail()], tokenStream, this, parent)
+                || check_rules(["(", new IdentifierList(), ")", new DirectDeclaratorTail()], tokenStream, this, parent)
+                || check_rules(["(", ")", new DirectDeclaratorTail()], tokenStream, this, parent);
         }
         else {
-            return check_rules([], tokenStream, this);
+            return check_rules([], tokenStream, this, parent);
         }
     }
 

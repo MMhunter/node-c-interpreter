@@ -15,9 +15,9 @@ export class DirectAbstractDeclarator implements IProductionRule {
 
     public readonly name = "direct_abstract_declarator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst("(")){
-            return check_rules(["(", new AbstractDeclarator, ")", new DirectAbstractDeclaratorTail()], tokenStream, this);
+            return check_rules(["(", new AbstractDeclarator, ")", new DirectAbstractDeclaratorTail()], tokenStream, this, parent);
         }
         return null;
     }

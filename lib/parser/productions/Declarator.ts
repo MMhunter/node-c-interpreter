@@ -16,13 +16,13 @@ export class Declarator implements IProductionRule {
 
     public readonly name = "declarator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(Pointer.firstSet)){
-            return check_rules([new Pointer(), new DirectDeclarator()], tokenStream, this);
+            return check_rules([new Pointer(), new DirectDeclarator()], tokenStream, this, parent);
 
         }
         else if (tokenStream.checkFirst(DirectDeclarator.firstSet)){
-            return check_rules([new DirectDeclarator()], tokenStream, this);
+            return check_rules([new DirectDeclarator()], tokenStream, this, parent);
         }
         return null;
     }

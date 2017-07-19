@@ -15,11 +15,11 @@ export class InitDeclaratorListTail implements IProductionRule {
 
     public readonly name = "init_declarator_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(",")){
-            return check_rules([",", new InitDeclarator(), new InitDeclaratorListTail()], tokenStream, this);
+            return check_rules([",", new InitDeclarator(), new InitDeclaratorListTail()], tokenStream, this, parent);
         }
-        return check_rules([], tokenStream, this);
+        return check_rules([], tokenStream, this, parent);
     }
 
 }

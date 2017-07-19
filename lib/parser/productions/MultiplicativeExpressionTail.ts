@@ -9,6 +9,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {CastExpression} from "./CastExpression";
 
 export class MultiplicativeExpressionTail implements IProductionRule {
 
@@ -16,8 +17,11 @@ export class MultiplicativeExpressionTail implements IProductionRule {
 
     public readonly name = "multiplicative_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules(["*", new CastExpression(), new MultiplicativeExpressionTail()], tokenStream, this, parent)
+            || check_rules(["/", new CastExpression(), new MultiplicativeExpressionTail()], tokenStream, this, parent)
+            || check_rules(["%", new CastExpression(), new MultiplicativeExpressionTail()], tokenStream, this, parent)
+            || check_rules([], tokenStream, this, parent);
     }
 
 }

@@ -17,8 +17,12 @@ export class StorageClassSpecifier implements IProductionRule {
 
     public readonly name = "storage_class_specifier";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.TYPEDEF], tokenStream, this, parent)
+            || check_rules([TokenType.EXTERN], tokenStream, this, parent)
+            || check_rules([TokenType.STATIC], tokenStream, this, parent)
+            || check_rules([TokenType.AUTO], tokenStream, this, parent)
+            || check_rules([TokenType.REGISTER], tokenStream, this, parent);
     }
 
 }

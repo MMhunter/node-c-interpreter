@@ -16,9 +16,9 @@ export class ExternalDeclaration implements IProductionRule {
 
     public readonly name = "external_declaration";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
 
-        return check_rules([new FunctionDefinition()], tokenStream, this) || check_rules([new Declaration()], tokenStream, this);
+        return check_rules([new FunctionDefinition()], tokenStream, this, parent) || check_rules([new Declaration()], tokenStream, this, parent);
     }
 
 }

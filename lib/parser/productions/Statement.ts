@@ -11,6 +11,12 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {LabeledStatement} from "./LabeledStatement";
+import {CompoundStatement} from "./CompoundStatement";
+import {ExpressionStatement} from "./ExpressionStatement";
+import {SelectionStatement} from "./SelectionStatement";
+import {IterationStatement} from "./IterationStatement";
+import {JumpStatement} from "./JumpStatement";
 
 export class Statement implements IProductionRule {
 
@@ -18,8 +24,13 @@ export class Statement implements IProductionRule {
 
     public readonly name = "statement";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new LabeledStatement()], tokenStream, this, parent)
+            || check_rules([new CompoundStatement()], tokenStream, this, parent)
+            || check_rules([new ExpressionStatement()], tokenStream, this, parent)
+            || check_rules([new SelectionStatement()], tokenStream, this, parent)
+            || check_rules([new IterationStatement()], tokenStream, this, parent)
+            || check_rules([new JumpStatement()], tokenStream, this, parent);
     }
 
 }

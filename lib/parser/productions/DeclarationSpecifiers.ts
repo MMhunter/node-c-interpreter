@@ -24,22 +24,22 @@ export class DeclarationSpecifiers implements IProductionRule {
 
     public readonly name = "declaration_specifiers";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(StorageClassSpecifier.firstSet)){
-            return check_rules([new StorageClassSpecifier(), new DeclarationSpecifiers()], tokenStream, this)
-                || check_rules([new StorageClassSpecifier()], tokenStream, this);
+            return check_rules([new StorageClassSpecifier(), new DeclarationSpecifiers()], tokenStream, this, parent)
+                || check_rules([new StorageClassSpecifier()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(TypeQualifier.firstSet)){
-            return check_rules([new TypeQualifier(), new DeclarationSpecifiers()], tokenStream, this)
-                || check_rules([new TypeQualifier()], tokenStream, this);
+            return check_rules([new TypeQualifier(), new DeclarationSpecifiers()], tokenStream, this, parent)
+                || check_rules([new TypeQualifier()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(TypeSpecifier.firstSet)){
-            return check_rules([new TypeSpecifier(), new DeclarationSpecifiers()], tokenStream, this)
-                || check_rules([new TypeSpecifier()], tokenStream, this);
+            return check_rules([new TypeSpecifier(), new DeclarationSpecifiers()], tokenStream, this, parent)
+                || check_rules([new TypeSpecifier()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(FunctionSpecifier.firstSet)){
-            return check_rules([new FunctionSpecifier(), new DeclarationSpecifiers()], tokenStream, this)
-                || check_rules([new FunctionSpecifier()], tokenStream, this);
+            return check_rules([new FunctionSpecifier(), new DeclarationSpecifiers()], tokenStream, this, parent)
+                || check_rules([new FunctionSpecifier()], tokenStream, this, parent);
         }
         return null;
     }

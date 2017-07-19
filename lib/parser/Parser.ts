@@ -1,6 +1,7 @@
 
 import {IProductionRule} from "./productions/ProductionRule";
 import {Token, TokenType} from "../lexer/Lexer";
+import {TranslationUnit} from "./productions/TranslationUnit";
 /**
  * @file Parser.class.js
  *
@@ -9,22 +10,30 @@ import {Token, TokenType} from "../lexer/Lexer";
 
 export class Parser {
 
-    private tokens: TokenStream;
+    public ASTRoot: ASTNode;
+    public tokens: TokenStream;
+    public mostValidTree: any;
+    public rootRule: IProductionRule;
 
-    private ASTRoot: ASTNode;
-
-    constructor(tokens: Token[]){
+    constructor(tokens: Token[], rootRule: IProductionRule = new TranslationUnit()){
         this.tokens = new TokenStream(tokens);
+        this.tokens.parser = this;
+        this.rootRule = rootRule;
         this.program();
     }
 
     private program() {
-
+        this.ASTRoot = new NonTerminal(null);
+        this.rootRule.apply(this.tokens, this.ASTRoot as NonTerminal);
     }
 
 }
 
 export class TokenStream{
+
+    public mostValidIndex: number = -1;
+
+    public parser: Parser;
 
     private tokens: Token[];
 
@@ -40,6 +49,10 @@ export class TokenStream{
 
     public nextToken(k: number = 1): Token{
         this.index += k ;
+        if (this.index > this.mostValidIndex){
+            this.mostValidIndex = this.index;
+            this.parser.mostValidTree = this.parser.ASTRoot.makeCopy();
+        }
         return this.tokens[this.index];
     }
 
@@ -49,6 +62,10 @@ export class TokenStream{
 
     public setIndex(index: number){
         this.index = index;
+        if (this.index > this.mostValidIndex){
+            this.mostValidIndex = this.index;
+            this.parser.mostValidTree = this.parser.ASTRoot.makeCopy();
+        }
     }
 
     public currentIndex(): number{
@@ -73,14 +90,14 @@ export class ASTNode {
 
     public parent: ASTNode;
 
-    public nextSibling: ASTNode;
+    public makeCopy(){
+        return null;
+    }
 }
 
 export class NonTerminal extends ASTNode {
 
-    public childHead: ASTNode;
-
-    public childTail: ASTNode;
+    public children: ASTNode[] = [];
 
     public nonTerminal: IProductionRule;
 
@@ -90,14 +107,44 @@ export class NonTerminal extends ASTNode {
     }
 
     public addChild(node: ASTNode){
-        if (!this.childHead){
-            this.childHead = node;
+
+        this.children.push(node);
+        node.parent = this;
+    }
+
+    public removeChild(node: ASTNode){
+        let index = this.children.indexOf(node);
+        if (index !== -1){
+            this.children.splice(index, 1);
+        }
+    }
+
+    public findRoot(){
+        let node: ASTNode = this;
+        while (node.parent){
+            node = node.parent;
+        }
+        return node;
+
+    }
+
+    public getName(){
+        if (this.nonTerminal){
+            return this.nonTerminal.name;
         }
         else{
-            this.childTail.nextSibling = node;
+            return "root";
         }
-        this.childTail = node;
     }
+
+    public makeCopy(){
+        let copy = new NonTerminal(this.nonTerminal);
+        copy.children = this.children.map(c=>{
+            return c.makeCopy();
+        });
+        return copy;
+    }
+
 }
 
 export class Terminal extends ASTNode{
@@ -109,31 +156,40 @@ export class Terminal extends ASTNode{
         this.token = token;
     }
 
+    public makeCopy(){
+        return new Terminal(this.token);
+    }
+
+
 }
 
-export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule): ASTNode {
+export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule, parent: NonTerminal): ASTNode {
 
-    let parent = new NonTerminal(nonTerminal);
+    let result = new NonTerminal(nonTerminal);
     let savedIndex = tokenStream.currentIndex();
+    parent.addChild(result);
     for (let rule of rules){
         let node;
-        if (rule.hasOwnProperty("apply")){
-            node = (rule as IProductionRule).apply(tokenStream);
+        if (typeof rule === "object"){
+            node = (rule as IProductionRule).apply(tokenStream, result);
         }
         else {
             if (tokenStream.lookAhead() && tokenStream.lookAhead().type === rule){
-                let token = tokenStream.nextToken();
+                let token = tokenStream.lookAhead();
                 node = new Terminal(token);
+                result.addChild(node);
+                tokenStream.nextToken();
             }
         }
 
         if (node) {
-            parent.addChild(node);
+
         }
         else {
             tokenStream.setIndex(savedIndex);
+            parent.removeChild(result);
             return null;
         }
     }
-    return parent;
+    return result;
 }

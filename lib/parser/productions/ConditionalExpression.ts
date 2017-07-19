@@ -16,9 +16,9 @@ export class ConditionalExpression implements IProductionRule {
 
     public readonly name = "conditional_expression";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new LogicalOrExpression(), "?", new Expression(), ":", new ConditionalExpression()], tokenStream, this)
-            || check_rules([new LogicalOrExpression()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new LogicalOrExpression(), "?", new Expression(), ":", new ConditionalExpression()], tokenStream, this, parent)
+            || check_rules([new LogicalOrExpression()], tokenStream, this, parent);
     }
 
 }

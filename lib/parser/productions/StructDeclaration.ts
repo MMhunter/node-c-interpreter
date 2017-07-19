@@ -6,6 +6,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {SpecifierQualifierList} from "./SpecifierQualifierList";
+import {StructDeclaratorList} from "./StructDeclaratorList";
 
 export class StructDeclaration implements IProductionRule {
 
@@ -13,8 +15,8 @@ export class StructDeclaration implements IProductionRule {
 
     public readonly name = "struct_declaration";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new SpecifierQualifierList(), new StructDeclaratorList(), ";"], tokenStream, this, parent);
     }
 
 }

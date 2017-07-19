@@ -15,11 +15,11 @@ export class Designator implements IProductionRule {
 
     public readonly name = "designator";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst("[")){
-            return check_rules(["[", new ConstantExpression(), "]"], tokenStream, this);
+            return check_rules(["[", new ConstantExpression(), "]"], tokenStream, this, parent);
         }else if (tokenStream.checkFirst(".")){
-            return check_rules([".", TokenType.IDENTIFIER], tokenStream, this);
+            return check_rules([".", TokenType.IDENTIFIER], tokenStream, this, parent);
         }
         return null;
     }

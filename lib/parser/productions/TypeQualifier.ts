@@ -15,8 +15,8 @@ export class TypeQualifier implements IProductionRule {
 
     public readonly name = "type_qualifier";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.CONST], tokenStream, this, parent) || check_rules([TokenType.RESTRICT], tokenStream, this, parent) || check_rules([TokenType.VOLATILE], tokenStream, this, parent);
     }
 
 }

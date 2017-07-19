@@ -1,4 +1,4 @@
-import {ASTNode, TokenStream} from "../Parser";
+import {ASTNode, NonTerminal, TokenStream} from "../Parser";
 /**
  * @file ProductionRule.class.js
  *
@@ -9,7 +9,7 @@ export interface IProductionRule {
 
     readonly name;
 
-    apply(tokenStream: TokenStream): ASTNode;
+    apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode;
 
 }
 

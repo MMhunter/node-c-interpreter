@@ -17,15 +17,12 @@ export class Initializer implements IProductionRule {
 
     public readonly name = "initializer";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        if (tokenStream.checkFirst("<")){
-            return check_rules(["<", new　AssignmentExpression(), ">"], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        if (tokenStream.checkFirst("{")){
+            return check_rules(["{", new InitializerList(), ",", "}"], tokenStream, this, parent)
+                || check_rules(["{", new InitializerList(), "}"], tokenStream, this, parent);
         }
-        else if (tokenStream.checkFirst("{")){
-            return check_rules(["{", new InitializerList(), ",", "}"], tokenStream, this)
-                || check_rules(["{", new InitializerList(), "}"], tokenStream, this);
-        }
-        return null;
+        return check_rules([ new　AssignmentExpression()], tokenStream, this, parent);
     }
 
 }

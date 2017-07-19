@@ -15,8 +15,8 @@ export class InitializerList implements IProductionRule {
 
     public readonly name = "initializer_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new Initializer(), new InitializerListTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new Initializer(), new InitializerListTail()], tokenStream, this, parent);
     }
 
 }

@@ -15,8 +15,8 @@ export class InitDeclaratorList implements IProductionRule {
 
     public readonly name = "init_declarator_list";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([new InitDeclarator(), new InitDeclaratorListTail()], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([new InitDeclarator(), new InitDeclaratorListTail()], tokenStream, this, parent);
     }
 
 }

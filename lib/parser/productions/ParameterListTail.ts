@@ -7,6 +7,7 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {ParameterDeclaration} from "./ParameterDeclaration";
 
 export class ParameterListTail implements IProductionRule {
 
@@ -14,8 +15,9 @@ export class ParameterListTail implements IProductionRule {
 
     public readonly name = "parameter_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([",", new ParameterDeclaration(), new ParameterListTail()], tokenStream, this, parent)
+            || check_rules([], tokenStream, this, parent);
     }
 
 }

@@ -14,11 +14,11 @@ export class IdentifierListTail implements IProductionRule {
 
     public readonly name = "identifier_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(",")){
-            return check_rules([",", TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this);
+            return check_rules([",", TokenType.IDENTIFIER, new IdentifierListTail()], tokenStream, this, parent);
         }
-        return check_rules([], tokenStream, this);
+        return check_rules([], tokenStream, this, parent);
     }
 
 }

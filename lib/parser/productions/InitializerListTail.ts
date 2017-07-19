@@ -17,12 +17,12 @@ export class InitializerListTail implements IProductionRule {
 
     public readonly name = "initializer_list_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(",")){
-            return check_rules([",", new Designation(), new Initializer(), new InitializerListTail()], tokenStream, this)
-                || check_rules([",", new Initializer(), new InitializerListTail()], tokenStream, this);
+            return check_rules([",", new Designation(), new Initializer(), new InitializerListTail()], tokenStream, this, parent)
+                || check_rules([",", new Initializer(), new InitializerListTail()], tokenStream, this, parent);
         }
-        return check_rules([], tokenStream, this);
+        return check_rules([], tokenStream, this, parent);
     }
 
 }

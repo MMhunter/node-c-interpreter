@@ -13,8 +13,8 @@ export class FunctionSpecifier implements IProductionRule {
 
     public readonly name = "function_specifier";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return check_rules([TokenType.INLINE], tokenStream, this);
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules([TokenType.INLINE], tokenStream, this, parent);
     }
 
 }

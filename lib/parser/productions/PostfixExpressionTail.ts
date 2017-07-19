@@ -13,6 +13,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {Expression} from "./Expression";
+import {ArgumentExpressionList} from "./ArgumentExpressionList";
 
 export class PostfixExpressionTail implements IProductionRule {
 
@@ -20,8 +22,15 @@ export class PostfixExpressionTail implements IProductionRule {
 
     public readonly name = "postfix_expression_tail";
 
-    public apply(tokenStream: TokenStream): ASTNode {
-        return null;
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        return check_rules(["[", new Expression(), "]", new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules(["(", ")", new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules(["(", new ArgumentExpressionList(), ")", new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules([".", TokenType.IDENTIFIER, new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules([TokenType.PTR_OP, TokenType.IDENTIFIER, new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules([TokenType.INC_OP, new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules([TokenType.DEC_OP, new PostfixExpressionTail()], tokenStream, this, parent)
+            || check_rules([], tokenStream, this, parent);
     }
 
 }

@@ -8,6 +8,8 @@
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
+import {Statement} from "./Statement";
+import {ConstantExpression} from "./ConstantExpression";
 
 export class LabeledStatement implements IProductionRule {
 
@@ -15,7 +17,16 @@ export class LabeledStatement implements IProductionRule {
 
     public readonly name = "labeled_statement";
 
-    public apply(tokenStream: TokenStream): ASTNode {
+    public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+        if (tokenStream.checkFirst(TokenType.IDENTIFIER)){
+           return check_rules([TokenType.IDENTIFIER, ":", new Statement()], tokenStream, this, parent);
+        }
+        else if (tokenStream.checkFirst(TokenType.CASE)){
+            return check_rules([TokenType.CASE, new ConstantExpression(), ":", new Statement()], tokenStream, this, parent);
+        }
+        else if (tokenStream.checkFirst(TokenType.DEFAULT)){
+            return check_rules([TokenType.DEFAULT, ":", new Statement()], tokenStream, this, parent);
+        }
         return null;
     }
 
