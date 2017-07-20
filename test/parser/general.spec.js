@@ -24,8 +24,17 @@ describe('general tokenizer test', function() {
         // console.log(lexer.errors);
         // console.log(lexer.supportTokens);
         // console.log(lexer.tokens.map(t=>t.text).join(" "));
+        let parser;
+        try{
+            parser = new Parser(lexer.tokens);
+        }
+        catch (e){
+            console.error(e);
+        }
+        //let obj = parser.ASTRoot.toObj();
 
-        let parser = new Parser(lexer.tokens);
-        console.log(parser.ASTRoot);
+        let functions = parser.ASTRoot.findChild("function_definition");
+
+        console.log(functions.map(s=>s.content));
     });
 });

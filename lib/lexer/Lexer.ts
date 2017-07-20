@@ -180,11 +180,19 @@ export class Lexer {
                 let start = this.currentIndex;
                 let offset = this.currentOffset;
                 let startLine = this.currentLine;
-                this.nextChar(2);
+                this.nextChar(1);
                 let value = "";
                 while (this.lookAhead() && !(this.lookAhead() === "*" && this.lookAhead(2) === "/") ) {
+                    if (this.currentChar() === "\n") {
+                        this.currentLine++;
+                        this.currentOffset = -1;
+                    }
                     value += this.lookAhead();
                     this.nextChar();
+                }
+                if (this.currentChar() === "\n") {
+                    this.currentLine++;
+                    this.currentOffset = -1;
                 }
                 this.nextChar(2);
                 let text = this.srcText.substr(start, this.currentIndex - start + 1);

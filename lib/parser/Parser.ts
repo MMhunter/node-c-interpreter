@@ -10,9 +10,8 @@ import {TranslationUnit} from "./productions/TranslationUnit";
 
 export class Parser {
 
-    public ASTRoot: ASTNode;
+    public ASTRoot: NonTerminal;
     public tokens: TokenStream;
-    public mostValidTree: any;
     public rootRule: IProductionRule;
 
     constructor(tokens: Token[], rootRule: IProductionRule = new TranslationUnit()){
@@ -25,6 +24,11 @@ export class Parser {
     private program() {
         this.ASTRoot = new NonTerminal(null);
         this.rootRule.apply(this.tokens, this.ASTRoot as NonTerminal);
+        this.ASTRoot.pruneTail();
+        if (this.tokens.currentIndex() < this.tokens.tokens.length - 1){
+            let unexpectedToken = this.tokens.tokens[this.tokens.currentIndex() + 1];
+            console.error(`parse error: unexpected token ${unexpectedToken.text} at line ${unexpectedToken.line + 1}, column ${unexpectedToken.offset + 1}` );
+        }
     }
 
 }
@@ -35,7 +39,7 @@ export class TokenStream{
 
     public parser: Parser;
 
-    private tokens: Token[];
+    public tokens: Token[];
 
     private index: number = -1;
 
@@ -51,7 +55,6 @@ export class TokenStream{
         this.index += k ;
         if (this.index > this.mostValidIndex){
             this.mostValidIndex = this.index;
-            this.parser.mostValidTree = this.parser.ASTRoot.makeCopy();
         }
         return this.tokens[this.index];
     }
@@ -64,7 +67,6 @@ export class TokenStream{
         this.index = index;
         if (this.index > this.mostValidIndex){
             this.mostValidIndex = this.index;
-            this.parser.mostValidTree = this.parser.ASTRoot.makeCopy();
         }
     }
 
@@ -80,9 +82,17 @@ export class TokenStream{
             return setOrType.indexOf(this.lookAhead().type) !== -1;
         }
         else {
-            return setOrType === this.lookAhead().type;
+            return setOrType === this.lookAhead ().type;
         }
 
+    }
+
+    public jumpUntil(s: string | TokenType) {
+        let token = this.nextToken();
+        while (token && token.type !== s){
+            token = this.nextToken();
+        }
+        return token;
     }
 }
 
@@ -91,6 +101,14 @@ export class ASTNode {
     public parent: ASTNode;
 
     public makeCopy(){
+        return null;
+    }
+
+    public toObj(){
+        return null;
+    }
+
+    public get content(){
         return null;
     }
 }
@@ -139,12 +157,62 @@ export class NonTerminal extends ASTNode {
 
     public makeCopy(){
         let copy = new NonTerminal(this.nonTerminal);
-        copy.children = this.children.map(c=>{
+        copy.children = this.children.map( (c) => {
             return c.makeCopy();
+        });
+        copy.children.forEach((c) => {
+            c.parent = copy;
         });
         return copy;
     }
 
+    public toObj(){
+        return {
+            name: this.getName(),
+            children: this.children.map((c) => {
+                return c.toObj();
+            }),
+        };
+    }
+
+    public findChild(name: string){
+
+        let result = [];
+        this.children.forEach((c) => {
+            if (c instanceof NonTerminal){
+                if (c.getName() === name){
+                    result.push(c);
+                }
+                else {
+                    result = result.concat(c.findChild(name));
+                }
+            }
+        });
+        return result;
+
+    }
+
+    public get content(){
+        return this.children.map((c) => c.content).join(" ");
+    }
+
+    public pruneTail(){
+
+        this.children.slice().forEach((c) => {
+            if (c instanceof NonTerminal){
+              c.pruneTail();
+            }
+        });
+        if (this.getName().indexOf("tail") !== -1){
+            let args = ([(this.parent as NonTerminal).children.indexOf(this), 1] as any[]).concat(this.children);
+            Array.prototype.splice.apply((this.parent as NonTerminal).children, args);
+            this.children.forEach( (c) => {
+                c.parent = this.parent;
+            });
+
+        }
+
+    }
 }
 
 export class Terminal extends ASTNode{
@@ -160,7 +228,37 @@ export class Terminal extends ASTNode{
         return new Terminal(this.token);
     }
 
+    public toObj(){
+        return this.token;
+    }
 
+    public get content(){
+        return this.token.text;
+    }
+}
+
+export class ParsingErrorTerminal extends ASTNode{
+    public tokens: Token[];
+
+    constructor(tokens: Token[]){
+        super();
+        this.tokens = tokens;
+    }
+
+    public makeCopy(){
+        return new ParsingErrorTerminal(this.tokens);
+    }
+
+    public toObj(){
+        return {
+            name: "error",
+            tokens: this.tokens,
+        };
+    }
+
+    public get content(){
+        return this.tokens.map( (t) => t.text).join(" ");
+    }
 }
 
 export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule, parent: NonTerminal): ASTNode {

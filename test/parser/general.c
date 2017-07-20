@@ -4,92 +4,73 @@
 */
 
 
+char Com = 0;
+void loop() {
 
-void setup()
-{
-    Display0.enablePageturning();/*开启翻页功能；*/
-    Display0.print(1, 1, "Initializing",SIZE_SMALL , SHOW_NORMAL);/*高级显示(行，列，显示内容：数字／变量／"字符串"，字体大小：小字／大字，模式：黑底白字／白底黑字)*/
-    Display0.print(2, 1, "Please waiting...",SIZE_SMALL , SHOW_NORMAL);/*高级显示(行，列，显示内容：数字／变量／"字符串"，字体大小：小字／大字，模式：黑底白字／白底黑字)*/
-    Motion0.calibrateGyroAccelerometer();/*校正加速度计；函数运行时模块亮黄色灯，这时需保持水平且静止。校正过程持续3秒。*/
-    Display0.clearAllPages();
-    Display0.print(1, 1, "press any key",SIZE_SMALL , SHOW_NORMAL);/*高级显示(行，列，显示内容：数字／变量／"字符串"，字体大小：小字／大字，模式：黑底白字／白底黑字)*/
-    Display0.print(2, 1, "to continue.",SIZE_SMALL , SHOW_NORMAL);/*高级显示(行，列，显示内容：数字／变量／"字符串"，字体大小：小字／大字，模式：黑底白字／白底黑字)*/
-    while(Display0.getPageButton() == BUTTON_NONE);//按键按下程序继续
-    Display0.clearAllPages();
-    Display0.print(1, 5, "3",SIZE_BIG , SHOW_NORMAL);
-    delay(800);
-    Display0.clearAllPages();
-    Display0.print(1, 5, "2",SIZE_BIG , SHOW_NORMAL);
-    delay(800);
-    Display0.clearAllPages();
-    Display0.print(1, 5, "1",SIZE_BIG , SHOW_NORMAL);
-    delay(800);
-    Display0.clearAllPages();
-    init_a = 1;//初始化标志位置位
 
-    if(setCycle(1.5))
+
+
+
+}
+
+
+
+
+
+/*数据更新触发，执行大括号中内容*/
+void Motion1_Data_Update(void){
+
+
+int x = (int)Motion1.getAngle(SPACE_Z);//map((int)Motion1.getAngle(SPACE_X), -90, 90, -390, 390);
+int y = (int)Motion1.getAngle(SPACE_Y);//map((int)Motion1.getAngle(SPACE_Y), -90, 90, -290, 290);
+
+
+static int mouseX = 0, mouseY = 0;
+
+    x = constrain(x, -85, 85);/*约束(数据，下限，上限)；将一个数约束在一个范围内*/
+    y = constrain(y, -85, 85);/*约束(数据，下限，上限)；将一个数约束在一个范围内*/
+
+    x = map(x , -85, 85, -390, 390);
+    y = map(y ,-85, 85, -290, 290);
+
+    sysmaster.serial.println(x);/*串口打印（内容：数字／变量／"字符串"）；显示完内容后自动换行*/
+
+    if(abs(mouseY - y ) > 15 )
     {
-      value_1 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;               //获取四个随机数
-      value_2 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-      value_3 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-      value_4 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-      while(((value_1==value_2)&&(value_1==value_3)&&(value_1==value_4)) || ( ((value_1==value_2)&&(value_1==value_3)) || ((value_1==value_2)&&(value_1==value_4)) || ((value_2==value_3)&&(value_2==value_4)) ) )
-      {
-        value_1 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-        value_2 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-        value_3 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-        value_4 = rand() % (MAX_2 + 1 - MIN_2) + MIN_2;
-      }
-      if(init_a == 1)//初始化后执行
-      {
-            // Display0.clearAllPages();
-            // Display0.print(1, 1, "#",SIZE_SMALL , SHOW_NORMAL);
-             delay(100);
-      }
+        // sysmaster.mouse.press(MOUSE_MIDDLE);/*鼠标按下按键（键值）；鼠标按下左键，右键键值MOUSE_RIGHT*/
+        if(mouseY > y) //参考点在右边
+        {
+             sysmaster.mouse.move(0, -2);/*鼠标移动（横向距离，纵向距离）；横向正数向右负数向左，纵向正数向上负数向下*/
+             mouseY-=2;
+        }
+        else
+        {
+
+        }
+    //  sysmaster.mouse.release(MOUSE_MIDDLE);/*鼠标松开按键（键值）；鼠标松开左键，右键键值MOUSE_RIGHT*/
     }
 
 
+
+
+
+
 }
 
-
-void loop()
+/*当串口未读取数据数量大于0时，执行大括号中内容*/
+void ( sysmaster.serial.available() > 0 )
 {
-// if(XY_x == 0) dis_x++;
-// if(XY_x == 1) dis_x--;
-// if(XY_y == 0) dis_y=1;
-// if(XY_y == 1) dis_y=2;
+Com = sysmaster.serial.read();
 
-// if(dis_x<1) dis_x=1;
-// if(dis_x>15)dis_x=15;
+    if(Com == 'C')
+    {
+        Motion1.calibrateGyroAccelerometer();/*校正加速度计；函数运行时模块亮黄色灯，这时需保持水平且静止。校正过程持续3秒。*/
+        Com = 0;
+    }
+    sysmaster.mouse.press(MOUSE_LEFT);/*鼠标按下按键（键值）；鼠标按下左键，右键键值MOUSE_RIGHT*/
 
-//     Display0.clearAllPages();
-//     Display0.print(dis_y, dis_x, "#",SIZE_SMALL , SHOW_NORMAL);
-//     delay(100);
+
+
 }
-
-
-// INTERRUPTER Motion0_Data_Update(void)
-// {
-//     if(Motion0.getAngle(SPACE_X)>9)         XY_x = 0; //右
-//     else if(Motion0.getAngle(SPACE_X)<-9)   XY_x = 1; //左
-//     else                                    XY_x = -1;//无操作
-//     if(Motion0.getAngle(SPACE_Y)>9)         XY_y = 0; //下
-//     else if(Motion0.getAngle(SPACE_Y)<-9)   XY_y = 1; //上
-//     else                                    XY_y = -1;//无操作
-// }
-//右x>0,左x<0;
-//上y<0,下y>0;
-
-
-unsigned int value_1 = 0;         //随机数2
-unsigned int value_2 = 0;         //随机数2
-unsigned int value_3 = 0;         //随机数2
-unsigned int value_4 = 0;         //随机数2
-#define MAX_1     4               //随机数最大值
-#define MIN_1     3               //随机数最小值
-#define MAX_2     16              //随机数最大值
-#define MIN_2     1               //随机数最小值
-
-
 
 
