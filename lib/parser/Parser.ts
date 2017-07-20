@@ -187,6 +187,11 @@ export class NonTerminal extends ASTNode {
                     result = result.concat(c.findChild(name));
                 }
             }
+            else if (c instanceof ParsingErrorTerminal){
+                if (name === "error"){
+                    result.push(c);
+                }
+            }
         });
         return result;
 

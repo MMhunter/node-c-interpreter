@@ -33,7 +33,7 @@ describe('general tokenizer test', function() {
         }
         //let obj = parser.ASTRoot.toObj();
 
-        let functions = parser.ASTRoot.findChild("function_definition");
+        let functions = parser.ASTRoot.findChild("error");
 
         console.log(functions.map(s=>s.content));
     });
