@@ -203,7 +203,31 @@ export class NonTerminal extends ASTNode {
         };
     }
 
-    public findDescendant(name: string){
+    public findChild(name: string){
+
+        let result = [];
+        this.children.forEach((c) => {
+            if (c instanceof NonTerminal){
+                if (c.getName() === name){
+                    result.push(c);
+                }
+            }
+            else if (c instanceof Terminal){
+                if (c.token.type === name){
+                    result.push(c);
+                }
+            }
+            else if (c instanceof ParsingErrorTerminal){
+                if (name === "error"){
+                    result.push(c);
+                }
+            }
+        });
+
+        return result;
+    }
+
+    public findDescendant(name: string | TokenType){
 
         let result = [];
         this.children.forEach((c) => {
@@ -213,6 +237,11 @@ export class NonTerminal extends ASTNode {
                 }
                 else {
                     result = result.concat(c.findDescendant(name));
+                }
+            }
+            else if (c instanceof Terminal){
+                if (c.token.type === name){
+                    result.push(c);
                 }
             }
             else if (c instanceof ParsingErrorTerminal){
