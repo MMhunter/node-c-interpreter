@@ -55,7 +55,8 @@ export class Statement implements IProductionRule {
                 }
             }
 
-            result = new ParsingErrorTerminal(tokenStream.tokens.slice(start, tokenStream.currentIndex()));
+            result = new ParsingErrorTerminal(tokenStream.tokens.slice(start, tokenStream.currentIndex() + 1));
+            parent.addChild(result);
         }
 
 

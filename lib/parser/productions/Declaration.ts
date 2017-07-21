@@ -19,6 +19,7 @@ export class Declaration implements IProductionRule {
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         return check_rules([new DeclarationSpecifiers(), new InitDeclaratorList(), ";"], tokenStream, this, parent)
             || check_rules([new DeclarationSpecifiers(), ";"], tokenStream , this, parent);
+
     }
 
 }

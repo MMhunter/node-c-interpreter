@@ -17,13 +17,8 @@ export class BlockItem implements IProductionRule {
     public readonly name = "block_item";
 
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
-        if (tokenStream.checkFirst(Declaration.firstSet)){
-            return check_rules([new Declaration()], tokenStream, this, parent);
-        }
-        else if (tokenStream.checkFirst(Statement.firstSet)){
-            return check_rules([new Statement()], tokenStream, this, parent);
-        }
-        return null;
+        return check_rules([new Declaration()], tokenStream, this, parent)
+            || check_rules([new Statement()], tokenStream, this, parent);
     }
 
 }
