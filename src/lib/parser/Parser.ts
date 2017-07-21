@@ -50,11 +50,11 @@ export class TokenStream{
         });
     }
 
-    public currentToken(): Token{
+    public currentToken(): ParsedToken{
         return this.tokens[this.index];
     }
 
-    public nextToken(k: number = 1): Token{
+    public nextToken(k: number = 1): ParsedToken{
         this.index += k ;
         if (this.index > this.mostValidIndex){
             this.mostValidIndex = this.index;
@@ -62,7 +62,7 @@ export class TokenStream{
         return this.tokens[this.index];
     }
 
-    public lookAhead(k: number = 1): Token{
+    public lookAhead(k: number = 1): ParsedToken{
         return this.tokens[this.index + k];
     }
 
@@ -308,11 +308,12 @@ export class NonTerminal extends ASTNode {
 
 export class Terminal extends ASTNode{
 
-    public token: Token;
+    public token: ParsedToken;
 
-    constructor(token: Token){
+    constructor(token: ParsedToken){
         super();
         this.token = token;
+        this.token.node = this;
     }
 
     public makeCopy(){
@@ -329,11 +330,14 @@ export class Terminal extends ASTNode{
 }
 
 export class ParsingErrorTerminal extends ASTNode{
-    public tokens: Token[];
+    public tokens: ParsedToken[];
 
-    constructor(tokens: Token[]){
+    constructor(tokens: ParsedToken[]){
         super();
         this.tokens = tokens;
+        tokens.forEach( (t) => {
+           t.node = this;
+        });
     }
 
     public makeCopy(){
