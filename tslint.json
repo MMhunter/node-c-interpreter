@@ -15,7 +15,8 @@
         "max-line-length": [false],
         "one-line": false,
         "no-empty": false,
-        "ordered-imports": false
+        "ordered-imports": false,
+        "variable-name": false
     },
     "rulesDirectory": []
 }

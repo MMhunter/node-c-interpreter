@@ -2,6 +2,7 @@
 import {IProductionRule} from "./productions/ProductionRule";
 import {Token, TokenType} from "../lexer/Lexer";
 import {TranslationUnit} from "./productions/TranslationUnit";
+import {IRange} from "../common/common";
 /**
  * @file Parser.class.js
  *
@@ -39,12 +40,14 @@ export class TokenStream{
 
     public parser: Parser;
 
-    public tokens: Token[];
+    public tokens: ParsedToken[];
 
     private index: number = -1;
 
     constructor(tokens: Token[]){
-        this.tokens = tokens;
+        this.tokens = tokens.map( (t) => {
+            return new ParsedToken(t);
+        });
     }
 
     public currentToken(): Token{
@@ -111,6 +114,22 @@ export class ASTNode {
     public get content(){
         return null;
     }
+
+    public findNearestParent(production: string): NonTerminal{
+        let node: ASTNode = this;
+        while ( node != null && (!(node instanceof NonTerminal) || (node as NonTerminal).getName() !== production) ){
+            node = node.parent;
+        }
+        return (node as NonTerminal);
+    }
+
+    public isDecendantOf(target: ASTNode){
+        let n: ASTNode = this;
+        while (n !== target && n != null){
+            n = n.parent;
+        }
+        return n != null;
+    }
 }
 
 export class NonTerminal extends ASTNode {
@@ -118,6 +137,15 @@ export class NonTerminal extends ASTNode {
     public children: ASTNode[] = [];
 
     public nonTerminal: IProductionRule;
+
+    private _range: IRange;
+
+    get range(): IRange{
+        if (!this._range){
+            this._range = this.getRange();
+        }
+        return this._range;
+    }
 
     constructor(nonTerminal: IProductionRule){
         super();
@@ -175,7 +203,7 @@ export class NonTerminal extends ASTNode {
         };
     }
 
-    public findChild(name: string){
+    public findDescendant(name: string){
 
         let result = [];
         this.children.forEach((c) => {
@@ -184,7 +212,7 @@ export class NonTerminal extends ASTNode {
                     result.push(c);
                 }
                 else {
-                    result = result.concat(c.findChild(name));
+                    result = result.concat(c.findDescendant(name));
                 }
             }
             else if (c instanceof ParsingErrorTerminal){
@@ -217,6 +245,35 @@ export class NonTerminal extends ASTNode {
 
         }
 
+    }
+
+    public removeLastChild(){
+        this.children.pop();
+    }
+
+    public getRange(): IRange{
+        let leftMost: ASTNode = this;
+        let rightMost: ASTNode = this;
+        while ((leftMost instanceof NonTerminal) && leftMost.children.length > 0){
+            leftMost = (leftMost as NonTerminal).children[0];
+        }
+        while ((rightMost instanceof NonTerminal) && rightMost.children.length > 0){
+            rightMost = (rightMost as NonTerminal).children[(rightMost as NonTerminal).children.length - 1];
+        }
+        if ( !(leftMost instanceof Terminal) || !(rightMost instanceof Terminal)){
+            return{
+                startLineNumber: 1,
+                startColumn: 1,
+                endLineNumber: 1,
+                endColumn: 1 ,
+            };
+        }
+        return {
+            startLineNumber: (leftMost as Terminal).token.line + 1,
+            startColumn: (leftMost as Terminal).token.offset + 1,
+            endLineNumber: (rightMost as Terminal).token.line + 1,
+            endColumn: (rightMost as Terminal).token.offset + (rightMost as Terminal).token.text.length + 1,
+        };
     }
 }
 
@@ -295,4 +352,14 @@ export function check_rules(rules: Array< IProductionRule | TokenType | string>,
         }
     }
     return result;
+}
+
+export class ParsedToken extends Token{
+
+    public node: ASTNode;
+
+    constructor(token: Token){
+        super(token.text, token.type, token.line, token.offset, token.value);
+    }
+
 }
