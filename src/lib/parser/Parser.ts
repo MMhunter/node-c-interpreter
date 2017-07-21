@@ -130,6 +130,10 @@ export class ASTNode {
         }
         return n != null;
     }
+
+    public getRange(){
+
+    }
 }
 
 export class NonTerminal extends ASTNode {
@@ -326,6 +330,15 @@ export class Terminal extends ASTNode{
 
     public get content(){
         return this.token.text;
+    }
+
+    public getRange(){
+        return {
+            startLineNumber: this.token.line + 1,
+            startColumn: this.token.offset + 1,
+            endLineNumber: this.token.line + 1,
+            endColumn: this.token.offset + this.token.text.length + 1,
+        };
     }
 }
 
