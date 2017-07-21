@@ -222,14 +222,15 @@ export class Lexer {
     private isIdentifierStart(char: string) {
         return (char >= "a" && char <= "z")
             || (char >= "A" && char <= "Z")
-            || (char === "_");
+            || (char === "_")
+            || (/[\u4e00-\u9fa5]/.test(char));
     }
 
     private isIdentifierFollow(char: string) {
         return (char >= "a" && char <= "z")
             || (char >= "A" && char <= "Z")
             || (char >= "0" && char <= "9")
-            || (char === "_");
+            || (/[\u4e00-\u9fa5]/.test(char));
     }
 
     private isDecNumber(char: string) {

@@ -4,7 +4,7 @@
  * Created by mmhunter on 09/07/2017.
  */
 
-const Lexer = require("../../index").lexer;
+const Lexer = require("../../index").lexer.Lexer;
 const expect = require('chai').expect;
 
 let getTokens = function(text){
@@ -15,6 +15,7 @@ describe('identifier tokenizer test', function() {
 
     it('valid identifier', function() {
         expect(getTokens(" thisIsId ")[0].text).to.be.equal("thisIsId");
+        expect(getTokens(" 傻逼 ")[0].text).to.be.equal("傻逼");
     });
 
     it('position', function() {
