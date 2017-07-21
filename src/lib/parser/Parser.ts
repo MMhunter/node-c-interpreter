@@ -367,6 +367,15 @@ export class ParsingErrorTerminal extends ASTNode{
     public get content(){
         return this.tokens.map( (t) => t.text).join(" ");
     }
+
+    public getRange(){
+        return {
+            startLineNumber: this.tokens[0].line + 1,
+            startColumn: this.tokens[0].offset + 1,
+            endLineNumber: this.tokens[this.tokens.length - 1].line + 1,
+            endColumn: this.tokens[this.tokens.length - 1].offset + this.tokens[this.tokens.length - 1].text.length + 1,
+        };
+    }
 }
 
 export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule, parent: NonTerminal): ASTNode {
