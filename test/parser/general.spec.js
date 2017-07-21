@@ -4,10 +4,10 @@
  * Created by mmhunter on 09/07/2017.
  */
 
-const Lexer = require("../../index").lexer.Lexer;
-const TokenType = require("../../index").lexer.TokenType;
+const Lexer = require("../../src/index").lexer.Lexer;
+const TokenType = require("../../src/index").lexer.TokenType;
 const expect = require('chai').expect;
-const Parser = require("../../index").parser.Parser;
+const Parser = require("../../src/index").parser.Parser;
 const fs = require("fs");
 const path = require("path");
 

@@ -211,7 +211,7 @@ declare module 'node-c-interpreter/lib/lexer/Lexer' {
 
 }
 declare module 'node-c-interpreter/index' {
-	import { Lexer, TokenType } from 'node-c-interpreter/lib/lexer/Lexer';
+	import { Lexer, TokenType } from 'node-c-interpreter/src/lib/lexer/Lexer';
 	/**
 	 * Created by mmhunter on 08/07/2017.
 	 */
@@ -222,7 +222,7 @@ declare module 'node-c-interpreter/index' {
 
 }
 declare module 'node-c-interpreter/lib/parser/productions/ProductionRule' {
-	import { ASTNode, TokenStream } from 'node-c-interpreter/lib/parser/Parser';
+	import { ASTNode, TokenStream } from 'node-c-interpreter/src/lib/parser/Parser';
 	/**
 	 * @file ProductionRule.class.js
 	 *
@@ -235,8 +235,8 @@ declare module 'node-c-interpreter/lib/parser/productions/ProductionRule' {
 
 }
 declare module 'node-c-interpreter/lib/parser/Parser' {
-	import { Token } from "node-c-interpreter/lib/lexer/Lexer";
-	import { IProductionRule } from 'node-c-interpreter/lib/parser/productions/ProductionRule';
+	import { Token } from "node-c-interpreter/src/lib/lexer/Lexer";
+	import { IProductionRule } from 'node-c-interpreter/src/lib/parser/productions/ProductionRule';
 	/**
 	 * @file Parser.class.js
 	 *
@@ -272,8 +272,8 @@ declare module 'node-c-interpreter/lib/parser/Parser' {
 
 }
 declare module 'node-c-interpreter/lib/parser/productions/PrimaryExpression' {
-	import { IProductionRule } from 'node-c-interpreter/lib/parser/productions/ProductionRule';
-	import { ASTNode, TokenStream } from 'node-c-interpreter/lib/parser/Parser';
+	import { IProductionRule } from 'node-c-interpreter/src/lib/parser/productions/ProductionRule';
+	import { ASTNode, TokenStream } from 'node-c-interpreter/src/lib/parser/Parser';
 	/**
 	 * Created by mmhunter on 11/07/2017.
 	 */

@@ -4,7 +4,7 @@
  * Created by mmhunter on 09/07/2017.
  */
 
-const Lexer = require("../../index").lexer.Lexer;
+const Lexer = require("../../src/index").lexer.Lexer;
 const expect = require('chai').expect;
 
 let getTokens = function(text){
