@@ -4,9 +4,9 @@
  *     { }
  *     { <block_item_list> }
  */
-import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
+import {ASTNode, check_rules, NonTerminal, ParsedToken, ParsingErrorTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
-import {TokenType} from "../../lexer/Lexer";
+import {Token, TokenType} from "../../lexer/Lexer";
 import {BlockItemList} from "./BlockItemList";
 
 export class CompoundStatement implements IProductionRule {
@@ -22,10 +22,22 @@ export class CompoundStatement implements IProductionRule {
                 return check_rules(["{", "}"], tokenStream, this, parent);
             }
             else{
-                return check_rules(["{", new BlockItemList(), "}"], tokenStream, this, parent);
-            }
-        }
+                let result = check_rules(["{", new BlockItemList()], tokenStream, this, parent);
+                if (result){
+                    if (tokenStream.checkFirst("}")){
+                        result.addChild(new Terminal(tokenStream.nextToken()));
+                    }
+                    else{
+                        // only if EOF has no end compound
+                        let fakeToken = new ParsedToken(new Token("}", "}", -1, -1));
+                        result.addChild(new ParsingErrorTerminal([fakeToken]));
+                    }
+                }
+                return result;
 
+            }
+
+        }
 
         return null;
     }

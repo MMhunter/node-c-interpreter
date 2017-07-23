@@ -27,7 +27,7 @@ export class Parser {
         this.rootRule.apply(this.tokens, this.ASTRoot as NonTerminal);
         this.ASTRoot.pruneTail();
         if (this.tokens.currentIndex() < this.tokens.tokens.length - 1){
-            let unexpectedToken = this.tokens.tokens[this.tokens.currentIndex() + 1];
+            let unexpectedToken = this.tokens.tokens[this.tokens.mostValidIndex + 1];
             console.error(`parse error: unexpected token ${unexpectedToken.text} at line ${unexpectedToken.line + 1}, column ${unexpectedToken.offset + 1}` );
         }
     }
@@ -378,7 +378,7 @@ export class ParsingErrorTerminal extends ASTNode{
     }
 }
 
-export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule, parent: NonTerminal): ASTNode {
+export function check_rules(rules: Array< IProductionRule | TokenType | string>, tokenStream: TokenStream, nonTerminal: IProductionRule, parent: NonTerminal): NonTerminal {
 
     let result = new NonTerminal(nonTerminal);
     let savedIndex = tokenStream.currentIndex();

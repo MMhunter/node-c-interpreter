@@ -78,8 +78,8 @@ export class ArgumentExpressionList implements IProductionRule {
             }
             if (parenthesisStack.length === 1 && tokenStream.checkFirst(",")){
                 this.parseArgument(tokenStream.tokens.slice(start, tokenStream.currentIndex() + 1), result, hasParenthesisError);
-                tokenStream.nextToken();
-                start = tokenStream.currentIndex() + 1;
+                result.addChild(new Terminal(tokenStream.lookAhead()));
+                start = tokenStream.currentIndex() + 2;
                 hasParenthesisError = false;
             }
             tokenStream.nextToken();

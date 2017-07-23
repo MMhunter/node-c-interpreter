@@ -41,13 +41,19 @@ export class Statement implements IProductionRule {
             else{
                 let token = tokenStream.nextToken();
                 let compoundStack = [];
-                while (token && (!(token.type === ";" || token.type === "}") || compoundStack.length > 0)){
+                while (token && (!(token.type === ";") || compoundStack.length > 0)){
                     if (token.type === "{"){
                         compoundStack.push("{");
                     }
                     else if (token.type === "}"){
-                        compoundStack.pop();
-                        if (compoundStack.length === 0){
+                        if (compoundStack.length > 0){
+                            compoundStack.pop();
+                            if (compoundStack.length === 0){
+                                break;
+                            }
+                        }
+                        else{
+                            tokenStream.setIndex(tokenStream.currentIndex() - 1);
                             break;
                         }
                     }
@@ -55,8 +61,9 @@ export class Statement implements IProductionRule {
                 }
             }
             let tokens = tokenStream.tokens.slice(start, tokenStream.currentIndex() + 1);
-            result = new ParsingErrorTerminal(tokens);
-            parent.addChild(result);
+            let r = new ParsingErrorTerminal(tokens);
+            parent.addChild(r);
+            return r;
         }
 
         return result;
