@@ -230,6 +230,7 @@ export class Lexer {
         return (char >= "a" && char <= "z")
             || (char >= "A" && char <= "Z")
             || (char >= "0" && char <= "9")
+            || (char === "_")
             || (/[\u4e00-\u9fa5]/.test(char));
     }
 
