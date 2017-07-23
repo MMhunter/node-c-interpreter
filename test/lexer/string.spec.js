@@ -4,7 +4,7 @@
  * Created by mmhunter on 09/07/2017.
  */
 
-const Lexer = require("../../src/index").lexer;
+const Lexer = require("../../build/index").Lexer;
 const expect = require('chai').expect;
 
 let getTokens = function(text){
@@ -19,6 +19,7 @@ describe('string tokenizer test', function() {
         expect(getTokens(' "this is \\"a\\" 字符串" ')[0].value).to.be.equal("this is \"a\" 字符串");
         expect(getTokens(' "this is " "two 字符串" ')[0].value).to.be.equal("this is ");
         expect(getTokens(' "this is " "two 字符串" ')[1].value).to.be.equal("two 字符串");
+        getTokens(' "this is " "two 字符串 ')
         expect(getTokens(' "this is a \u5b57\u7b26\u4e32" ')[0].value).to.be.equal("this is a 字符串");
     });
 });

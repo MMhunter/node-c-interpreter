@@ -155,7 +155,7 @@ export class Lexer {
                 let offset = this.currentOffset;
                 let startChar = currentChar;
                 let value = "";
-                while (this.lookAhead() !== startChar){
+                while (this.lookAhead() && this.lookAhead() !== startChar){
                     value += this.readNextStringChar();
                 }
                 this.nextChar();
