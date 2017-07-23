@@ -160,7 +160,7 @@ export class Lexer {
                 }
                 this.nextChar();
                 let text = this.srcText.substr(start, this.currentIndex - start + 1);
-                this.tokens.push(new Token(text, TokenType.STRING_LITERAL, this.currentLine, this.currentOffset, value));
+                this.tokens.push(new Token(text, TokenType.STRING_LITERAL, this.currentLine, offset, value));
             }
             else if (currentChar === "/" && this.lookAhead() === "/") {
                 // inline comment
