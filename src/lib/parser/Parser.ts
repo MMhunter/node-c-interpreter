@@ -44,10 +44,15 @@ export class TokenStream{
 
     private index: number = -1;
 
-    constructor(tokens: Token[]){
-        this.tokens = tokens.map( (t) => {
-            return new ParsedToken(t);
-        });
+    constructor(tokens: Token[], subStream: boolean = false){
+        if(!subStream) {
+            this.tokens = tokens.map((t) => {
+                return new ParsedToken(t);
+            });
+        }
+        else {
+            this.tokens = (tokens as ParsedToken[]);
+        }
     }
 
     public currentToken(): ParsedToken{

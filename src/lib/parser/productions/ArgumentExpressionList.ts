@@ -102,7 +102,7 @@ export class ArgumentExpressionList implements IProductionRule {
             parent.addChild(new ParsingErrorTerminal(tokens));
             return;
         }
-        let subStream = new TokenStream(tokens);
+        let subStream = new TokenStream(tokens, true);
         let r = new AssignmentExpression().apply(subStream, parent);
         if (!r){
             parent.addChild(new ParsingErrorTerminal(tokens));
