@@ -59,7 +59,6 @@ export class Statement implements IProductionRule {
             parent.addChild(result);
         }
 
-
         return result;
     }
 
