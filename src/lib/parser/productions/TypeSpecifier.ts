@@ -33,7 +33,9 @@ export class TypeSpecifier implements IProductionRule {
 
         if (tokenStream.checkFirst(TokenType.IDENTIFIER)){
            if (tokenStream.lookAhead().couldBeUsedAsTypeName){
-               return check_rules([TokenType.IDENTIFIER], tokenStream, this, parent);
+               if (tokenStream.lookAhead(2) && (["=", ",", ";"] as any[]).indexOf(tokenStream.lookAhead(2).type) === -1){
+                   return check_rules([TokenType.IDENTIFIER], tokenStream, this, parent);
+               }
            }
         }
 
