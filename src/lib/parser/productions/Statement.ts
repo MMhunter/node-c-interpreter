@@ -32,40 +32,6 @@ export class Statement implements IProductionRule {
             || check_rules([new JumpStatement()], tokenStream, this, parent)
             || check_rules([new ExpressionStatement()], tokenStream, this, parent);
 
-        if (!result){
-            // panic error recovery
-            let start = tokenStream.currentIndex() + 1;
-            if (tokenStream.checkFirst("{")){
-                tokenStream.jumpUntil("}");
-            }
-            else{
-                let token = tokenStream.nextToken();
-                let compoundStack = [];
-                while (token && (!(token.type === ";") || compoundStack.length > 0)){
-                    if (token.type === "{"){
-                        compoundStack.push("{");
-                    }
-                    else if (token.type === "}"){
-                        if (compoundStack.length > 0){
-                            compoundStack.pop();
-                            if (compoundStack.length === 0){
-                                break;
-                            }
-                        }
-                        else{
-                            tokenStream.setIndex(tokenStream.currentIndex() - 1);
-                            break;
-                        }
-                    }
-                    token = tokenStream.nextToken();
-                }
-            }
-            let tokens = tokenStream.tokens.slice(start, tokenStream.currentIndex() + 1);
-            let r = new ParsingErrorTerminal(tokens);
-            parent.addChild(r);
-            return r;
-        }
-
         return result;
     }
 

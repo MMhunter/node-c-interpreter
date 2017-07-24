@@ -1,6 +1,5 @@
 
 
 void loop(){
-    int a = c *
-    b;
+    int a
 }
