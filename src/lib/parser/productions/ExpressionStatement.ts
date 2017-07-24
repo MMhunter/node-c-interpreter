@@ -4,9 +4,9 @@
  *     ;
  *     <expression> ;
  */
-import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
+import {ASTNode, check_rules, NonTerminal, ParsedToken, ParsingErrorTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
-import {TokenType} from "../../lexer/Lexer";
+import {Token, TokenType} from "../../lexer/Lexer";
 import {Expression} from "./Expression";
 
 export class ExpressionStatement implements IProductionRule {
@@ -16,13 +16,29 @@ export class ExpressionStatement implements IProductionRule {
     public readonly name = "expression_statement";
 
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
-        if (tokenStream.checkFirst(";")){
-            return check_rules([";"], tokenStream, this, parent);
+        if (tokenStream.checkFirst(Expression.firstSet)){
+            let result = check_rules([new Expression()], tokenStream, this, parent);
+            if (result) {
+                if (tokenStream.checkFirst(";")) {
+                    result.addChild(new Terminal(tokenStream.nextToken()));
+                }
+                else {
+                    let fakeToken = new ParsedToken(new Token(";", ";", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length + 1));
+                    let error = new ParsingErrorTerminal([fakeToken]);
+                    error.expected = true;
+                    result.addChild(error);
+                }
+            }
+            return result;
         }
-        else if (tokenStream.checkFirst(Expression.firstSet)){
-            return check_rules([new Expression(), ";"], tokenStream, this, parent);
+        else{
+            if (tokenStream.checkFirst(";")){
+                return check_rules([";"], tokenStream, this, parent);
+            }
+            else {
+                return null;
+            }
         }
-        return null;
     }
 
 }

@@ -27,10 +27,10 @@ export class Statement implements IProductionRule {
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         let result = check_rules([new LabeledStatement()], tokenStream, this, parent)
             || check_rules([new CompoundStatement()], tokenStream, this, parent)
-            || check_rules([new ExpressionStatement()], tokenStream, this, parent)
             || check_rules([new SelectionStatement()], tokenStream, this, parent)
             || check_rules([new IterationStatement()], tokenStream, this, parent)
-            || check_rules([new JumpStatement()], tokenStream, this, parent);
+            || check_rules([new JumpStatement()], tokenStream, this, parent)
+            || check_rules([new ExpressionStatement()], tokenStream, this, parent);
 
         if (!result){
             // panic error recovery

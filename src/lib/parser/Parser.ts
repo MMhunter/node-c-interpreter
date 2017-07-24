@@ -348,7 +348,11 @@ export class Terminal extends ASTNode{
 }
 
 export class ParsingErrorTerminal extends ASTNode{
+
     public tokens: ParsedToken[];
+
+    // if this error is when token is needed but not exist
+    public expected: boolean = false;
 
     constructor(tokens: ParsedToken[]){
         super();

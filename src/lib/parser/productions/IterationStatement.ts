@@ -8,9 +8,9 @@
  *     FOR ( <declaration> <expression_statement> ) <statement>
  *     FOR ( <declaration> <expression_statement> <expression> ) <statement>
  */
-import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
+import {ASTNode, check_rules, NonTerminal, ParsedToken, ParsingErrorTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
-import {TokenType} from "../../lexer/Lexer";
+import {Token, TokenType} from "../../lexer/Lexer";
 import {Expression} from "./Expression";
 import {Statement} from "./Statement";
 import {ExpressionStatement} from "./ExpressionStatement";
@@ -23,8 +23,23 @@ export class IterationStatement implements IProductionRule {
     public readonly name = "iteration_statement";
 
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
+
+        let result =  check_rules([TokenType.DO, new Statement(), TokenType.WHILE, "(", new Expression(), ")"], tokenStream, this, parent);
+
+        if (result){
+            if (tokenStream.checkFirst(";")){
+                result.addChild(new Terminal(tokenStream.nextToken()));
+            }
+            else{
+                let fakeToken = new ParsedToken(new Token(";", ";", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length + 1));
+                let error = new ParsingErrorTerminal([fakeToken]);
+                error.expected = true;
+                result.addChild(error);
+            }
+            return result;
+        }
+
         return check_rules([TokenType.WHILE, "(", new Expression(), ")", new Statement()], tokenStream, this, parent)
-            || check_rules([TokenType.DO, new Statement(), TokenType.WHILE, "(", new Expression(), ")", ";"], tokenStream, this, parent)
             || check_rules([TokenType.FOR, "(", new ExpressionStatement(), new ExpressionStatement(), new Expression(), ")", new Statement()], tokenStream, this, parent)
             || check_rules([TokenType.FOR, "(", new ExpressionStatement(), new ExpressionStatement(), ")", new Statement()], tokenStream, this, parent)
             || check_rules([TokenType.FOR, "(", new Declaration(), new ExpressionStatement(), new Expression(), ")", new Statement()], tokenStream, this, parent)
