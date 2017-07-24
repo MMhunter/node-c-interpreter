@@ -16,7 +16,7 @@ let getTokens = function(text){
 describe('general tokenizer test', function() {
 
     it('testfile', function() {
-        let codeString = fs.readFileSync(path.join(__dirname,"./general.c"),"utf8");
+        let codeString = fs.readFileSync(path.join(__dirname,"./general2.c"),"utf8");
 
         let lexer = new Lexer(codeString);
         // console.log(lexer.tokens);

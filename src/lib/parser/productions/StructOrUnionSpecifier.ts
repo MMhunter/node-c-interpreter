@@ -18,7 +18,25 @@ export class StructOrUnionSpecifier implements IProductionRule {
     public readonly name = "struct_or_union_specifier";
 
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
-        return check_rules([new StructOrUnion(), TokenType.IDENTIFIER, "{", new StructDeclarationList(), "}"], tokenStream, this, parent) || check_rules([new StructOrUnion(), "{", new StructDeclarationList(), "}"], tokenStream, this, parent) || check_rules([new StructOrUnion(), TokenType.IDENTIFIER], tokenStream, this, parent);
+
+        if (tokenStream.checkFirst(StructOrUnion.firstSet) && tokenStream.lookAhead(2) && tokenStream.lookAhead(2).type === "{"){
+            return check_rules([new StructOrUnion(), "{", new StructDeclarationList(), "}"], tokenStream, this, parent);
+        }
+        else{
+            let result = check_rules([new StructOrUnion(), TokenType.IDENTIFIER, "{", new StructDeclarationList(), "}"], tokenStream, this, parent) || check_rules([new StructOrUnion(), TokenType.IDENTIFIER], tokenStream, this, parent);
+            if (result){
+                let type_name_token = (result.children[1] as Terminal).token;
+                for (let i = tokenStream.currentIndex(); i < tokenStream.tokens.length; i++){
+                    let token = tokenStream.tokens[i];
+                    if (token.type === TokenType.IDENTIFIER && token.text === type_name_token.text){
+                        token.couldBeUsedAsTypeName = true;
+                    }
+                }
+            }
+
+            return result;
+        }
+
     }
 
 }

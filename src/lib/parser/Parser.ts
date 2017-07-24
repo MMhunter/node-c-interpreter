@@ -422,6 +422,8 @@ export class ParsedToken extends Token{
 
     public node: ASTNode;
 
+    public couldBeUsedAsTypeName: boolean = false;
+
     constructor(token: Token){
         super(token.text, token.type, token.line, token.offset, token.value);
     }
