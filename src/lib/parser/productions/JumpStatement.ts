@@ -24,12 +24,16 @@ export class JumpStatement implements IProductionRule {
             switch (tokenStream.lookAhead().type) {
                 case TokenType.GOTO:
                     result =  check_rules([TokenType.GOTO, TokenType.IDENTIFIER], tokenStream, this, parent);
+                    break;
                 case TokenType.CONTINUE:
                     result = check_rules([TokenType.CONTINUE], tokenStream, this, parent);
+                    break;
                 case TokenType.BREAK:
                     result = check_rules([TokenType.BREAK], tokenStream, this, parent);
+                    break;
                 case TokenType.RETURN:
                     result = check_rules([TokenType.RETURN] , tokenStream, this, parent) || check_rules([TokenType.RETURN, new Expression()], tokenStream, this, parent);
+                    break;
             }
             if (!result){
                 return null;
