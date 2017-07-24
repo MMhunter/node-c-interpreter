@@ -31,7 +31,7 @@ export class IterationStatement implements IProductionRule {
                 result.addChild(new Terminal(tokenStream.nextToken()));
             }
             else{
-                let fakeToken = new ParsedToken(new Token(";", ";", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length + 1));
+                let fakeToken = new ParsedToken(new Token(";", ";", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length));
                 let error = new ParsingErrorTerminal([fakeToken]);
                 error.expected = true;
                 result.addChild(error);
