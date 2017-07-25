@@ -1,11 +1,18 @@
-int i = 0;
-int j = 0;
+struct Dot{
+    int x;
+    int y;
+};
 
-void loop() {
+Dot createDot(int x, int y){
+    Dot dot = {0,0};
+}
 
-    sysmaster.serial.println(i+"\" +j);/*串口打印（内容：数字／变量／"字符串"）；显示完内容后自动换行*/
+enum SHAPE_TYPE
+{
+      SQUARE=0
+};
 
-void loop() {
-    sysmaster.serial.println(i+"\" +j);/*串口打印（内容：数字／变量／"字符串"）；显示完内容后自动换行*/"
-
-int
+struct Shape{
+    Dot dots[4];
+    SHAPE_TYPE type;
+};
