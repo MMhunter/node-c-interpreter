@@ -155,10 +155,12 @@ export class Lexer {
                 let offset = this.currentOffset;
                 let startChar = currentChar;
                 let value = "";
-                while (this.lookAhead() && this.lookAhead() !== startChar){
+                while (this.lookAhead() && (this.lookAhead() !== startChar && this.lookAhead() !== "\n")){
                     value += this.readNextStringChar();
                 }
-                this.nextChar();
+                if (this.lookAhead() !== "\n") {
+                    this.nextChar();
+                }
                 let text = this.srcText.substr(start, this.currentIndex - start + 1);
                 this.tokens.push(new Token(text, TokenType.STRING_LITERAL, this.currentLine, offset, value));
             }

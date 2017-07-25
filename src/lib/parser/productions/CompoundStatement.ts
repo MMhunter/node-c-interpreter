@@ -29,6 +29,9 @@ export class CompoundStatement implements IProductionRule {
                     }
                     else{
                         // only if EOF has no end compound
+                        while (!tokenStream.currentToken()){
+                            tokenStream.setIndex(tokenStream.currentIndex()-1);
+                        }
                         let fakeToken = new ParsedToken(new Token("}", "}", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length));
                         let error = new ParsingErrorTerminal([fakeToken]);
                         error.expected = true;
