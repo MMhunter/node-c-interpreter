@@ -32,7 +32,7 @@ export class JumpStatement implements IProductionRule {
                     result = check_rules([TokenType.BREAK], tokenStream, this, parent);
                     break;
                 case TokenType.RETURN:
-                    result = check_rules([TokenType.RETURN] , tokenStream, this, parent) || check_rules([TokenType.RETURN, new Expression()], tokenStream, this, parent);
+                    result = check_rules([TokenType.RETURN, new Expression()] , tokenStream, this, parent) || check_rules([TokenType.RETURN], tokenStream, this, parent);
                     break;
             }
             if (!result){
