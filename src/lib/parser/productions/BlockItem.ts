@@ -9,6 +9,7 @@ import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
 import {Declaration} from "./Declaration";
 import {Statement} from "./Statement";
+import {FunctionDefinition} from "./FunctionDefinition";
 
 export class BlockItem implements IProductionRule {
 
@@ -21,33 +22,42 @@ export class BlockItem implements IProductionRule {
             || check_rules([new Statement()], tokenStream, this, parent);
         if (!result){
             // panic error recovery
+            let currentCompound = parent.findNearestParent("compound_statement");
+            if (currentCompound && currentCompound.parent instanceof FunctionDefinition){
+                return null;
+            }
             let start = tokenStream.currentIndex() + 1;
             if (tokenStream.checkFirst("{")){
                 tokenStream.jumpUntil("}");
             }
             else{
-                let token = tokenStream.nextToken();
                 let compoundStack = [];
-                while (token && (!(token.type === ";") || compoundStack.length > 0)){
-                    if (token.type === "{"){
+                while (tokenStream.lookAhead() && (!(tokenStream.lookAhead().type === ";") && !(tokenStream.lookAhead().line !== tokenStream.currentToken().line) || compoundStack.length > 0)){
+                    if (tokenStream.lookAhead().type === "{"){
                         compoundStack.push("{");
                     }
-                    else if (token.type === "}"){
+                    else if (tokenStream.lookAhead().type === "}"){
                         if (compoundStack.length > 0){
                             compoundStack.pop();
                             if (compoundStack.length === 0){
+                                tokenStream.nextToken();
                                 break;
                             }
                         }
                         else{
-                            tokenStream.setIndex(tokenStream.currentIndex() - 1);
                             break;
                         }
                     }
-                    token = tokenStream.nextToken();
+                    tokenStream.nextToken();
                 }
             }
+            while (tokenStream.currentToken() && tokenStream.currentToken().type !== ";" && tokenStream.checkFirst(";")){
+                tokenStream.nextToken();
+            }
             let tokens = tokenStream.tokens.slice(start, tokenStream.currentIndex() + 1);
+            if (tokens.length === 0){
+                return null;
+            }
             let r = new ParsingErrorTerminal(tokens);
             parent.addChild(r);
             return r;

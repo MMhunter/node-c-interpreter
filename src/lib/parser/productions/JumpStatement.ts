@@ -42,7 +42,7 @@ export class JumpStatement implements IProductionRule {
                 if (tokenStream.checkFirst(";")){
                     result.addChild(new Terminal(tokenStream.nextToken()));
                 }
-                else{
+                else if (tokenStream.lookAhead() && tokenStream.lookAhead().line !== tokenStream.currentToken().line){
                     let fakeToken = new ParsedToken(new Token(";", ";", tokenStream.currentToken().line, tokenStream.currentToken().offset + tokenStream.currentToken().text.length));
                     let error = new ParsingErrorTerminal([fakeToken]);
                     error.expected = true;
