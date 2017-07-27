@@ -1,15 +1,16 @@
 /**
  * rule:
  * labeled_statement
- *     IDENTIFIER : <statement>
- *     CASE <constant_expression> : <statement>
- *     DEFAULT : <statement>
+ *     IDENTIFIER : <block_item>
+ *     CASE <constant_expression> : <block_item>
+ *     DEFAULT : <block_item>
  */
 import {ASTNode, check_rules, NonTerminal, Terminal, TokenStream} from "../Parser";
 import {IProductionRule} from "./ProductionRule";
 import {TokenType} from "../../lexer/Lexer";
 import {Statement} from "./Statement";
 import {ConstantExpression} from "./ConstantExpression";
+import {BlockItem} from "./BlockItem";
 
 export class LabeledStatement implements IProductionRule {
 
@@ -19,13 +20,13 @@ export class LabeledStatement implements IProductionRule {
 
     public apply(tokenStream: TokenStream, parent: NonTerminal): ASTNode {
         if (tokenStream.checkFirst(TokenType.IDENTIFIER)){
-           return check_rules([TokenType.IDENTIFIER, ":", new Statement()], tokenStream, this, parent);
+           return check_rules([TokenType.IDENTIFIER, ":", new BlockItem()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(TokenType.CASE)){
-            return check_rules([TokenType.CASE, new ConstantExpression(), ":", new Statement()], tokenStream, this, parent);
+            return check_rules([TokenType.CASE, new ConstantExpression(), ":", new BlockItem()], tokenStream, this, parent);
         }
         else if (tokenStream.checkFirst(TokenType.DEFAULT)){
-            return check_rules([TokenType.DEFAULT, ":", new Statement()], tokenStream, this, parent);
+            return check_rules([TokenType.DEFAULT, ":", new BlockItem()], tokenStream, this, parent);
         }
         return null;
     }
