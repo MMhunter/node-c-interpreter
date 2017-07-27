@@ -298,7 +298,7 @@ export class NonTerminal extends ASTNode {
         while ((rightMost instanceof NonTerminal) && rightMost.children.length > 0){
             rightMost = (rightMost as NonTerminal).children[(rightMost as NonTerminal).children.length - 1];
         }
-        if ( !(leftMost instanceof Terminal) || !(rightMost instanceof Terminal)){
+        if ( !(leftMost instanceof Terminal || leftMost instanceof ParsingErrorTerminal) || !(rightMost instanceof Terminal || rightMost instanceof ParsingErrorTerminal)){
             return{
                 startLineNumber: 1,
                 startColumn: 1,
@@ -307,10 +307,10 @@ export class NonTerminal extends ASTNode {
             };
         }
         return {
-            startLineNumber: (leftMost as Terminal).token.line + 1,
-            startColumn: (leftMost as Terminal).token.offset + 1,
-            endLineNumber: (rightMost as Terminal).token.line + 1,
-            endColumn: (rightMost as Terminal).token.offset + (rightMost as Terminal).token.text.length + 1,
+            startLineNumber: leftMost.getRange().startLineNumber,
+            startColumn: leftMost.getRange().startColumn,
+            endLineNumber: rightMost.getRange().endLineNumber,
+            endColumn: rightMost.getRange().endColumn,
         };
     }
 }
