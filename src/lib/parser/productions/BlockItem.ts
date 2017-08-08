@@ -22,17 +22,13 @@ export class BlockItem implements IProductionRule {
             || check_rules([new Statement()], tokenStream, this, parent);
         if (!result){
             // panic error recovery
-            let currentCompound = parent.findNearestParent("compound_statement");
-            if (currentCompound && currentCompound.parent instanceof FunctionDefinition){
-                return null;
-            }
             let start = tokenStream.currentIndex() + 1;
             if (tokenStream.checkFirst("{")){
                 tokenStream.jumpUntil("}");
             }
             else{
                 let compoundStack = [];
-                while (tokenStream.lookAhead() && (!(tokenStream.lookAhead().type === ";") && !(tokenStream.lookAhead().line !== tokenStream.currentToken().line) || compoundStack.length > 0)){
+                while (tokenStream.lookAhead() && (!(tokenStream.lookAhead().type === ";") && !(tokenStream.lookAhead().line !== tokenStream.currentToken().line && tokenStream.currentIndex() >= start) || compoundStack.length > 0)){
                     if (tokenStream.lookAhead().type === "{"){
                         compoundStack.push("{");
                     }

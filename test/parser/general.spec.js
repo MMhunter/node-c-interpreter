@@ -13,7 +13,7 @@ let getTokens = function(text){
     return new Lexer(text).tokens;
 };
 
-describe('general tokenizer test', function() {
+describe('general parser test', function() {
 
     it('testfile', function() {
         let codeString = fs.readFileSync(path.join(__dirname,"./general2.c"),"utf8");
