@@ -1,0 +1,172 @@
+import {ADD} from "./operators/ADD";
+import {fromArrayPresenting, fromText} from "./VMCodeParser";
+/**
+ * Created by mmhunter on 18/08/2017.
+ */
+
+// here the max memory is not in bytes, since we used the built-in js types to store data to make it simpler
+
+const MAX_MEMORY_LENGTH = 1024 * 1024 * 64;
+
+export class VirtualMachine{
+
+    public stack;
+
+    private memory: MemoryData[] = [];
+
+    private code: ProgramOperation[] = [];
+
+    // program register
+    private pc: Register;
+
+    // accumulator register
+    private ax;
+
+    constructor(){
+        this.stack = new Stack(this);
+    }
+
+    public loadCode(code: ProgramOperation[]){
+        this.pc = new Register();
+        this.pc.data = MemoryData.Int(0);
+        this.code = code;
+    }
+
+    public memset(index: number, data: MemoryData){
+        this.memory[index] = data;
+    }
+
+    public memget(index: number): MemoryData{
+        return this.memory[index];
+    }
+
+    public operate(operation: ProgramOperation){
+        operation.operate(this);
+    }
+
+    public runNextCode(){
+        if (this.code[this.pc.data.data]){
+            this.pc.data.data ++;
+            this.operate(this.code[this.pc.data.data - 1]);
+            return true;
+        }
+        return false;
+    }
+
+    public start(){
+        while (this.runNextCode()){
+
+        }
+    }
+
+    public getRegister(name: string): Register{
+        let reg = this[name];
+        if (!reg || !(reg instanceof Register)){
+            throw new Error("bad reg parameter");
+        }
+        return reg;
+    }
+}
+
+export class Stack{
+
+    // stack pointer
+    private sp: Register;
+
+    constructor(private vm: VirtualMachine, memoryEndIndex: number = MAX_MEMORY_LENGTH - 1){
+
+        this.sp = new Register();
+        this.sp.data = MemoryData.Int(memoryEndIndex);
+    }
+
+    public push(data: MemoryData){
+        this.sp.data.data --;
+        this.vm.memset(this.sp.data.data, data);
+    }
+
+    public pop(): MemoryData{
+        return this.vm.memget(this.sp.data.data);
+    }
+}
+
+export class Register{
+
+    public data: MemoryData;
+
+}
+
+export class MemoryData {
+
+    public static Int(value: number){
+        return new MemoryData(MemoryDataType.Integer, Math.floor(value));
+    }
+
+    public static String(value: string){
+        return new MemoryData(MemoryDataType.String, value);
+    }
+
+    public static Float(value: number){
+        return new MemoryData(MemoryDataType.Float, value);
+    }
+
+    constructor(public readonly type: MemoryDataType, public data: any){
+
+    }
+}
+
+export enum MemoryDataType{
+
+    String,
+    Integer,
+    Float,
+}
+
+export class MemoryAddress{
+
+    constructor(public readonly index: number){
+
+    }
+
+}
+
+export interface IOperator{
+
+    readonly name: string;
+
+    readonly call: (param1: Register | MemoryData | MemoryAddress, param2: Register | MemoryData | MemoryAddress, vm: VirtualMachine ) => void;
+}
+
+export class ProgramOperation{
+
+    constructor(private readonly operator: IOperator,
+                private readonly param1: string | MemoryData,
+                private readonly param1asAddress: boolean = false,
+                private readonly param2: string | MemoryData,
+                private readonly param2asAddress: boolean = false,
+    ){
+
+    }
+
+    public operate(vm: VirtualMachine){
+        let param1: Register | MemoryData | MemoryAddress = (typeof this.param1 === "string") ? vm.getRegister(this.param1 as string) : (this.param1 as (MemoryData | MemoryAddress));
+        let param2: Register | MemoryData | MemoryAddress = (typeof this.param1 === "string") ? vm.getRegister(this.param2 as string) : (this.param2 as (MemoryData | MemoryAddress));
+        if (param1 && this.param1asAddress){
+            let index: number = (param1 instanceof Register) ? (param1 as Register).data.data : (param1 as MemoryData).data;
+            param1 = new MemoryAddress(index);
+        }
+        if (param2 && this.param2asAddress){
+            let index: number = (param2 instanceof Register) ? (param2 as Register).data.data : (param2 as MemoryData).data;
+            param2 = new MemoryAddress(index);
+        }
+        this.operator.call(param1, param2, vm);
+    }
+}
+
+export const Operators: {[key: string]: IOperator} = {
+    "ADD": ADD,
+};
+
+export const VMCodeParser = {
+    fromArrayPresenting,
+    fromText,
+}

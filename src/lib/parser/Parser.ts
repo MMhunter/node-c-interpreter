@@ -244,9 +244,7 @@ export class NonTerminal extends ASTNode {
                 if (c.getName() === name){
                     result.push(c);
                 }
-                else {
-                    result = result.concat(c.findDescendant(name));
-                }
+                result = result.concat(c.findDescendant(name));
             }
             else if (c instanceof Terminal){
                 if (c.token.type === name){
