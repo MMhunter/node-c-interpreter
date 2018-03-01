@@ -1,5 +1,11 @@
 import {ADD} from "./operators/ADD";
 import {fromArrayPresenting, fromText} from "./VMCodeParser";
+import {SUB} from "./operators/SUB";
+import {MOV} from "./operators/MOV";
+import {JMP} from "./operators/JMP";
+import {JZ} from "./operators/JZ";
+import {JNZ} from "./operators/JNZ";
+import {CMP} from "./operators/CMP";
 /**
  * Created by mmhunter on 18/08/2017.
  */
@@ -22,6 +28,9 @@ export class VirtualMachine{
     // accumulator register
     private ax;
 
+    // compare register
+    private cf;
+
     constructor(){
         this.stack = new Stack(this);
     }
@@ -30,13 +39,20 @@ export class VirtualMachine{
         this.pc = new Register();
         this.pc.data = MemoryData.Int(0);
         this.code = code;
+        this.ax = new Register();
+        this.ax.data = MemoryData.Int(0);
+        this.cf = new Register();
+        this.cf.data = MemoryData.Int(0);
     }
 
     public memset(index: number, data: MemoryData){
         this.memory[index] = data;
     }
 
-    public memget(index: number): MemoryData{
+    public memget(index: number, failIfNotAllocated: boolean = true): MemoryData{
+        if(!this.memory[index] && failIfNotAllocated){
+            throw new Error ("Memory not allocated");
+        }
         return this.memory[index];
     }
 
@@ -65,6 +81,18 @@ export class VirtualMachine{
             throw new Error("bad reg parameter");
         }
         return reg;
+    }
+
+    public jumpTo(value: MemoryData): void {
+        if(!value){
+            throw new Error("bad pc value");
+        }
+        if(value.type === MemoryDataType.Integer || value.type === MemoryDataType.Char){
+            this.pc.data.data = value.data;
+        }
+        else if(value.type === MemoryDataType.Float){
+            this.pc.data.data = Math.floor(value.data);
+        }
     }
 }
 
@@ -101,8 +129,15 @@ export class MemoryData {
         return new MemoryData(MemoryDataType.Integer, Math.floor(value));
     }
 
-    public static String(value: string){
-        return new MemoryData(MemoryDataType.String, value);
+    public static Char(value: string){
+        let intVal: number = 0;
+        if(value == null || value.length == 0){
+            intVal = 0;
+        }
+        else{
+            intVal = value.charCodeAt(0);
+        }
+        return new MemoryData(MemoryDataType.Char, intVal);
     }
 
     public static Float(value: number){
@@ -116,7 +151,7 @@ export class MemoryData {
 
 export enum MemoryDataType{
 
-    String,
+    Char,
     Integer,
     Float,
 }
@@ -149,7 +184,7 @@ export class ProgramOperation{
 
     public operate(vm: VirtualMachine){
         let param1: Register | MemoryData | MemoryAddress = (typeof this.param1 === "string") ? vm.getRegister(this.param1 as string) : (this.param1 as (MemoryData | MemoryAddress));
-        let param2: Register | MemoryData | MemoryAddress = (typeof this.param1 === "string") ? vm.getRegister(this.param2 as string) : (this.param2 as (MemoryData | MemoryAddress));
+        let param2: Register | MemoryData | MemoryAddress = (typeof this.param2 === "string") ? vm.getRegister(this.param2 as string) : (this.param2 as (MemoryData | MemoryAddress));
         if (param1 && this.param1asAddress){
             let index: number = (param1 instanceof Register) ? (param1 as Register).data.data : (param1 as MemoryData).data;
             param1 = new MemoryAddress(index);
@@ -164,9 +199,29 @@ export class ProgramOperation{
 
 export const Operators: {[key: string]: IOperator} = {
     "ADD": ADD,
+    "SUB": SUB,
+    "MOV": MOV,
+    "JMP": JMP,
+    "JZ" : JZ,
+    "JNZ": JNZ,
+    "CMP": CMP,
 };
 
 export const VMCodeParser = {
     fromArrayPresenting,
     fromText,
+};
+
+export function getMemoryData(data:Register | MemoryData | MemoryAddress, vm: VirtualMachine): MemoryData {
+
+    if (data instanceof Register) {
+        return data.data;
+    }
+    else if (data instanceof MemoryAddress) {
+        return vm.memget(data.index);
+    }
+    else if (data instanceof MemoryData) {
+        return data;
+    }
+    return null;
 }

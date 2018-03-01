@@ -18,6 +18,12 @@ function readOperator(text: string): IOperator {
 }
 
 function readParameter(text: string): {param: string | MemoryData, paramAsAddress: boolean}{
+    if(text == null){
+        return {
+            param:null,
+            paramAsAddress: false,
+        };
+    }
     let addrMatch = /^\[(.+)]$/.exec(text);
     let isAddr = false;
     let param = null;
@@ -26,8 +32,8 @@ function readParameter(text: string): {param: string | MemoryData, paramAsAddres
         text = addrMatch[1];
     }
 
-    if (/^"([^"]|\\")*"$/.test(text)){
-        param = MemoryData.String(/^"([^"]|\\")*"$/.exec(text)[1]);
+    if (/^'([^']|\\')*'$/.test(text)){
+        param = MemoryData.Char(/^'([^']|\\')*'$/.exec(text)[1]);
     }
     else if (/^(0[xX][a-fA-F0-9]+)$/.test(text)){
         param = MemoryData.Int(parseInt(text, 16));
