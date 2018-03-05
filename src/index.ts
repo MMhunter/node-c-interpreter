@@ -4,4 +4,3 @@ export {VirtualMachine, VMCodeParser} from "./lib/virtualMachine/VirtualMachine"
 /**
  * Created by mmhunter on 08/07/2017.
  */
-

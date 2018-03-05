@@ -7,10 +7,10 @@ export function fromArrayPresenting(code: string[][]): ProgramOperation[]{
 }
 
 function readLine(line: string[]): ProgramOperation {
-    let opeator = readOperator(line[0]);
+    let operator = readOperator(line[0]);
     let p1 = readParameter(line[1]);
     let p2 = readParameter(line[2]);
-    return new ProgramOperation(opeator, p1.param, p1.paramAsAddress, p2.param, p2.paramAsAddress);
+    return new ProgramOperation(operator, p1.param, p1.paramAsAddress, p2.param, p2.paramAsAddress);
 }
 
 function readOperator(text: string): IOperator {
@@ -18,9 +18,9 @@ function readOperator(text: string): IOperator {
 }
 
 function readParameter(text: string): {param: string | MemoryData, paramAsAddress: boolean}{
-    if(text == null){
+    if (text == null) {
         return {
-            param:null,
+            param: null,
             paramAsAddress: false,
         };
     }

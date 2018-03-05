@@ -16,7 +16,7 @@ const MAX_MEMORY_LENGTH = 1024 * 1024 * 64;
 
 export class VirtualMachine{
 
-    public stack;
+    public stack: Stack;
 
     private memory: MemoryData[] = [];
 
